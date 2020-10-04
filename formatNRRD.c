@@ -137,13 +137,14 @@ On output:
 ****
 ***/
 
-#define MAGIC "NRRD"
+#define MGIC "NRRD"
 #define MAGIC0 "NRRD00.01"
 #define MAGIC1 "NRRD0001"
 #define MAGIC2 "NRRD0002"
 #define MAGIC3 "NRRD0003"
 #define MAGIC4 "NRRD0004"
 #define MAGIC5 "NRRD0005"
+#define MAGIC6 "NRRD0006"
 
 const char *
 _nrrdFormatURLLine0 = "Complete NRRD file format specification at:";
@@ -291,13 +292,19 @@ nrrdIoStateDataFileIterNext(FILE **fileP, NrrdIoState *nio, int reading) {
 }
 
 /*
-** we try to use the oldest format that will hold the nrrd
+** we try to use the oldest format that will hold the nrrd; this
+** function will determine which NRRD00XX magic gets used for the
+** output file
 */
 int
 _nrrdFormatNRRD_whichVersion(const Nrrd *nrrd, NrrdIoState *nio) {
   int ret;
 
-  if (_nrrdFieldInteresting(nrrd, nio, nrrdField_measurement_frame)) {
+  if (nrrdEncodingZRL == nio->encoding
+      || nrrdSpaceRightUp == nrrd->space
+      || nrrdSpaceRightDown == nrrd->space) {
+    ret = 6;
+  } else if (_nrrdFieldInteresting(nrrd, nio, nrrdField_measurement_frame)) {
     ret = 5;
   } else if (_nrrdFieldInteresting(nrrd, nio, nrrdField_thicknesses)
              || _nrrdFieldInteresting(nrrd, nio, nrrdField_space)
@@ -352,6 +359,7 @@ _nrrdFormatNRRD_contentStartsLike(NrrdIoState *nio) {
           || !strcmp(MAGIC3, nio->line)
           || !strcmp(MAGIC4, nio->line)
           || !strcmp(MAGIC5, nio->line)
+          || !strcmp(MAGIC6, nio->line)
           );
 }
 
@@ -528,9 +536,25 @@ _nrrdFormatNRRD_read(FILE *file, Nrrd *nrrd, NrrdIoState *nio) {
     if (!nio->encoding->isCompression) {
       /* bytes are skipped here for non-compression encodings, but are
          skipped within the decompressed stream for compression encodings */
-      if (nrrdByteSkip(dataFile, nrrd, nio)) {
-        biffAddf(NRRD, "%s: couldn't skip bytes", me);
-        return 1;
+      if (nio->dataFSkip) {
+        /* this error checking is clearly done unnecessarily repeated,
+           but it was logically the simplest place to add it */
+        if (nio->byteSkip) {
+          biffAddf(NRRD, "%s: using per-list-line skip, "
+                   "but also set global byte skip %ld", me, nio->byteSkip);
+          return 1;
+        }
+        /* wow, the meaning of nio->dataFNIndex is a little confusing */
+        if (_nrrdByteSkipSkip(dataFile, nrrd, nio, nio->dataFSkip[nio->dataFNIndex-1])) {
+          biffAddf(NRRD, "%s: couldn't skip %ld bytes on for list line %u",
+                   me, nio->dataFSkip[nio->dataFNIndex-1], nio->dataFNIndex-1);
+          return 1;
+        }
+      } else {
+        if (nrrdByteSkip(dataFile, nrrd, nio)) {
+          biffAddf(NRRD, "%s: couldn't skip bytes", me);
+          return 1;
+        }
       }
     }
     /* ---------------- read the data itself */
@@ -658,12 +682,13 @@ _nrrdFormatNRRD_write(FILE *file, const Nrrd *nrrd, NrrdIoState *nio) {
 
   /* the magic is in fact the first thing to be written */
   if (file) {
-    fprintf(file, "%s%04d\n", MAGIC, _nrrdFormatNRRD_whichVersion(nrrd, nio));
+    fprintf(file, "%s%04d\n", MGIC, _nrrdFormatNRRD_whichVersion(nrrd, nio));
   } else if (nio->headerStringWrite) {
     sprintf(nio->headerStringWrite, "%s%04d\n",
-            MAGIC, _nrrdFormatNRRD_whichVersion(nrrd, nio));
+            MGIC, _nrrdFormatNRRD_whichVersion(nrrd, nio));
   } else {
-    nio->headerStrlen = AIR_CAST(unsigned int, strlen(MAGIC) + strlen("0000")) + 1;
+    nio->headerStrlen = AIR_CAST(unsigned int, strlen(MGIC)
+                                 + strlen("0000")) + 1;
   }
 
   /* write the advertisement about where to get the file format */
@@ -686,9 +711,9 @@ _nrrdFormatNRRD_write(FILE *file, const Nrrd *nrrd, NrrdIoState *nio) {
   for (ii=1; ii<=NRRD_FIELD_MAX; ii++) {
     if (_nrrdFieldInteresting(nrrd, nio, ii)) {
       if (file) {
-        _nrrdFprintFieldInfo(file, "", nrrd, nio, ii);
+        _nrrdFprintFieldInfo(file, "", nrrd, nio, ii, AIR_FALSE);
       } else if (nio->headerStringWrite) {
-        _nrrdSprintFieldInfo(&strptr, "", nrrd, nio, ii);
+        _nrrdSprintFieldInfo(&strptr, "", nrrd, nio, ii, AIR_FALSE);
         if (strptr) {
           strcat(nio->headerStringWrite, strptr);
           strcat(nio->headerStringWrite, "\n");
@@ -696,7 +721,7 @@ _nrrdFormatNRRD_write(FILE *file, const Nrrd *nrrd, NrrdIoState *nio) {
           strptr = NULL;
         }
       } else {
-        _nrrdSprintFieldInfo(&strptr, "", nrrd, nio, ii);
+        _nrrdSprintFieldInfo(&strptr, "", nrrd, nio, ii, AIR_FALSE);
         if (strptr) {
           nio->headerStrlen += AIR_CAST(unsigned int, strlen(strptr));
           nio->headerStrlen += AIR_CAST(unsigned int, strlen("\n"));

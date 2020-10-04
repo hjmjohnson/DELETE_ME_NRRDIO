@@ -49,11 +49,11 @@
 ** NOTE: ../../CMakeLists.txt's Teem_VERSION variables must be in sync
 */
 #define TEEM_VERSION_MAJOR       1   /* must be 1 digit */
-#define TEEM_VERSION_MINOR      11   /* 1 or 2 digits */
-#define TEEM_VERSION_PATCH      01   /* 1 or 2 digits */
-#define TEEM_VERSION         11101   /* must be 5 digits, to facilitate
+#define TEEM_VERSION_MINOR      12   /* 1 or 2 digits */
+#define TEEM_VERSION_PATCH      00   /* 1 or 2 digits */
+#define TEEM_VERSION         11200   /* must be 5 digits, to facilitate
                                         easy numerical comparison */
-#define TEEM_VERSION_STRING "1.11.1" /* cannot be so easily compared */
+#define TEEM_VERSION_STRING "1.12.0" /* cannot be so easily compared */
 
 
 
@@ -132,6 +132,7 @@ typedef union {
   short **s;
   unsigned int **ui;
   int **i;
+  long int **li;
   float **f;
   double **d;
   void **v;
@@ -608,6 +609,7 @@ NRRDIO_EXPORT void airMopDebug(airArray *arr);
 ** "invalid operands to binary ^ (have ‘int’ and ‘int’)" but these
 ** problems oddly went away with the explicit cast to int.
 */
+
 #if 1
 #define AIR_EXISTS(x) (airExists(x))
 #else
@@ -852,6 +854,7 @@ extern "C" {
 #define NRRD_COMMENT_INCR 16
 #define NRRD_KEYVALUE_INCR 32
 #define NRRD_LIST_FLAG "LIST"
+#define NRRD_SKIPLIST_FLAG "SKIPLIST"
 #define NRRD_PNM_COMMENT "# NRRD>"    /* this is designed to be robust against
                                          the mungling that xv does, but no
                                          promises for any other image
@@ -891,11 +894,15 @@ extern "C" {
 **
 ** the various things it makes sense to get and set in nrrdIoState struct
 ** via nrrdIoStateGet and nrrdIoStateSet
+** BUT HEY are those functions actually used (as opposed to directly reading
+** or setting fields in the nio)?  GLK honestly forgot about those functions
+** until working on adding nio->moreThanFloatInText
 */
 enum {
   nrrdIoStateUnknown,
   nrrdIoStateDetachedHeader,
   nrrdIoStateBareText,
+  nrrdIoStateMoreThanFloatInText,
   nrrdIoStateCharsPerLine,
   nrrdIoStateValsPerLine,
   nrrdIoStateSkipData,
@@ -918,7 +925,10 @@ enum {
   nrrdFormatTypePNM,    /* 2: PNM image */
   nrrdFormatTypePNG,    /* 3: PNG image */
   nrrdFormatTypeVTK,    /* 4: VTK Structured Points datasets (v1.0 and 2.0) */
-  nrrdFormatTypeText,   /* 5: bare ASCII text for 2D arrays */
+  nrrdFormatTypeText,   /* 5: ASCII text for 2D arrays, which may or may
+                              not be bare (i.e. just numbers, no header
+                              lines that start with "#") according
+                              to NrrdIoState->bareText */
   nrrdFormatTypeEPS,    /* 6: Encapsulated PostScript (write-only) */
   nrrdFormatTypeLast
 };
@@ -989,9 +999,10 @@ enum {
   nrrdEncodingTypeHex,      /* 3: hexidecimal (two chars per byte) */
   nrrdEncodingTypeGzip,     /* 4: gzip'ed raw data */
   nrrdEncodingTypeBzip2,    /* 5: bzip2'ed raw data */
+  nrrdEncodingTypeZRL,      /* 6: zero run-length compresion */
   nrrdEncodingTypeLast
 };
-#define NRRD_ENCODING_TYPE_MAX 5
+#define NRRD_ENCODING_TYPE_MAX 6
 
 /*
 ******** nrrdZlibStrategy enum
@@ -1307,21 +1318,25 @@ enum {
 */
 enum {
   nrrdSpaceUnknown,
-  nrrdSpaceRightAnteriorSuperior,     /*  1: NIFTI-1 (right-handed) */
-  nrrdSpaceLeftAnteriorSuperior,      /*  2: standard Analyze (left-handed) */
-  nrrdSpaceLeftPosteriorSuperior,     /*  3: DICOM 3.0 (right-handed) */
-  nrrdSpaceRightAnteriorSuperiorTime, /*  4: */
-  nrrdSpaceLeftAnteriorSuperiorTime,  /*  5: */
-  nrrdSpaceLeftPosteriorSuperiorTime, /*  6: */
-  nrrdSpaceScannerXYZ,                /*  7: ACR/NEMA 2.0 (pre-DICOM 3.0) */
-  nrrdSpaceScannerXYZTime,            /*  8: */
-  nrrdSpace3DRightHanded,             /*  9: */
-  nrrdSpace3DLeftHanded,              /* 10: */
-  nrrdSpace3DRightHandedTime,         /* 11: */
-  nrrdSpace3DLeftHandedTime,          /* 12: */
+  nrrdSpaceRightUp,                   /*  1: 2-D, oriented like upper right
+                                          Cartesian quadrant, number I */
+  nrrdSpaceRightDown,                 /*  2: 2-D, oriented like raster
+                                          coordinates */
+  nrrdSpaceRightAnteriorSuperior,     /*  3: NIFTI-1 (right-handed) */
+  nrrdSpaceLeftAnteriorSuperior,      /*  4: standard Analyze (left-handed) */
+  nrrdSpaceLeftPosteriorSuperior,     /*  5: DICOM 3.0 (right-handed) */
+  nrrdSpaceRightAnteriorSuperiorTime, /*  6: */
+  nrrdSpaceLeftAnteriorSuperiorTime,  /*  7: */
+  nrrdSpaceLeftPosteriorSuperiorTime, /*  8: */
+  nrrdSpaceScannerXYZ,                /*  9: ACR/NEMA 2.0 (pre-DICOM 3.0) */
+  nrrdSpaceScannerXYZTime,            /* 10: */
+  nrrdSpace3DRightHanded,             /* 11: */
+  nrrdSpace3DLeftHanded,              /* 12: */
+  nrrdSpace3DRightHandedTime,         /* 13: */
+  nrrdSpace3DLeftHandedTime,          /* 14: */
   nrrdSpaceLast
 };
-#define NRRD_SPACE_MAX                   12
+#define NRRD_SPACE_MAX                   14
 
 /*
 ******** nrrdSpacingStatus* enum
@@ -1821,6 +1836,13 @@ typedef struct NrrdIoState_t {
   long int byteSkip;        /* exactly like lineSkip, but bytes
                                instead of lines.  First the lines are
                                skipped, then the bytes */
+  long int *dataFSkip;      /* skip per-data-file line from a NRRD0006 "data
+                               file: SKIPLIST" specification; THIS OVERRIDES
+                               the single byteSkip above. The non-NULL-ity of
+                               this indicates there is a per-file byte skip.
+                               Line skip still precedes per-file byte skip. */
+  airArray *dataFSkipArr;   /* for managing the above */
+
   /* Note that the NRRD0004 and NRRD0005 file formats indicate that a numbered
      sequence of data filenames should be indexed via a "%d" format
      specification, and that the format doc says nothing about the "min" and
@@ -1850,6 +1872,10 @@ typedef struct NrrdIoState_t {
     bareText,               /* when writing a plain text file, is there any
                                effort made to record the nrrd struct
                                info in the text file */
+    moreThanFloatInText,    /* when writing a plain text file, instead of the
+                               usual behavior of silently converting to float,
+                               explicitly record the type, and also ensure
+                               that the ascii encoding is lossless */
     skipData,               /* if non-zero (all formats):
                                ON READ: don't allocate memory for, and don't
                                read in, the data portion of the file (but we
@@ -1898,6 +1924,7 @@ typedef struct NrrdIoState_t {
 /* defaultsNrrd.c */
 NRRDIO_EXPORT int nrrdDefaultWriteEncodingType;
 NRRDIO_EXPORT int nrrdDefaultWriteBareText;
+NRRDIO_EXPORT int nrrdDefaultWriteMoreThanFloatInText;
 NRRDIO_EXPORT unsigned int nrrdDefaultWriteCharsPerLine;
 NRRDIO_EXPORT unsigned int nrrdDefaultWriteValsPerLine;
 NRRDIO_EXPORT int nrrdDefaultCenter;
@@ -2085,6 +2112,7 @@ NRRDIO_EXPORT const NrrdEncoding *const nrrdEncodingAscii;
 NRRDIO_EXPORT const NrrdEncoding *const nrrdEncodingHex;
 NRRDIO_EXPORT const NrrdEncoding *const nrrdEncodingGzip;
 NRRDIO_EXPORT const NrrdEncoding *const nrrdEncodingBzip2;
+NRRDIO_EXPORT const NrrdEncoding *const nrrdEncodingZRL;
 /* encoding.c */
 NRRDIO_EXPORT const NrrdEncoding *const nrrdEncodingUnknown;
 NRRDIO_EXPORT const NrrdEncoding *
@@ -2100,6 +2128,8 @@ NRRDIO_EXPORT int (*nrrdFieldInfoParse[NRRD_FIELD_MAX+1])(FILE *file, Nrrd *nrrd
 NRRDIO_EXPORT unsigned int _nrrdDataFNNumber(NrrdIoState *nio);
 NRRDIO_EXPORT int _nrrdContainsPercentThisAndMore(const char *str, char thss);
 NRRDIO_EXPORT int _nrrdDataFNCheck(NrrdIoState *nio, Nrrd *nrrd, int useBiff);
+NRRDIO_EXPORT size_t (*const nrrdStringValsParse[NRRD_TYPE_MAX+1])
+                    (void *out, const char *s, const char *sep, size_t n);
 
 /* read.c */
 NRRDIO_EXPORT int _nrrdOneLine(unsigned int *lenP, NrrdIoState *nio, FILE *file);

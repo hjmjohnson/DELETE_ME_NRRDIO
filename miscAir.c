@@ -48,7 +48,7 @@ airTeemVersion = TEEM_VERSION_STRING;
 const int
 airTeemReleaseDone = AIR_FALSE;
 const char *
-airTeemReleaseDate = "2014, with luck";
+airTeemReleaseDate = "maybe 2019 or 2020";
 
 /*
 ******** airTeemVersionSprint

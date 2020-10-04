@@ -1,6 +1,6 @@
 #
 # NrrdIO: stand-alone code for basic nrrd functionality
-# Copyright (C) 2013, 2012, 2011, 2010, 2009  University of Chicago
+# Copyright (C) 2013--2020  University of Chicago
 # Copyright (C) 2008, 2007, 2006, 2005  Gordon Kindlmann
 # Copyright (C) 2004, 2003, 2002, 2001, 2000, 1999, 1998  University of Utah
 #
@@ -86,8 +86,8 @@ NEED_NRRD = $(addprefix nrrd/, \
   accessors.c defaultsNrrd.c enumsNrrd.c arraysNrrd.c methodsNrrd.c \
   reorder.c axis.c simple.c comment.c keyvalue.c endianNrrd.c \
   parseNrrd.c gzio.c read.c write.c format.c formatNRRD.c \
-  encoding.c encodingRaw.c encodingAscii.c encodingHex.c encodingGzip.c \
-  subset.c)
+  encodingRaw.c encodingAscii.c encodingHex.c encodingGzip.c encodingZRL.c \
+  encoding.c subset.c)
 NEED_SRCS = $(NEED_AIR) $(NEED_BIFF) $(NEED_NRRD)
 NEED_PUB_HDRS = air/air.h biff/biff.h \
   $(addprefix nrrd/, nrrdDefines.h nrrdEnums.h nrrdMacros.h nrrd.h)

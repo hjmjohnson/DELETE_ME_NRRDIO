@@ -266,7 +266,7 @@ airOneLinify(char *s) {
     return s;
 
   /* convert white space to space (' '), and delete unprintables */
-  for (i=0; i<len && s[i]; i++) {
+  for (i=0; i<len; i++) {
     if (isspace(AIR_CAST(int, s[i]))) {
       s[i] = ' ';
       continue;
@@ -277,6 +277,8 @@ airOneLinify(char *s) {
         s[j] = s[j+1];
       }
       i--;
+      /* string got shorter (prevent ininite loop) */
+      len--;
       continue;
     }
   }

@@ -51,6 +51,9 @@ nrrdIoStateSet(NrrdIoState *nio, int parm, int value) {
   case nrrdIoStateBareText:
     nio->bareText = !!value;
     break;
+  case nrrdIoStateMoreThanFloatInText:
+    nio->moreThanFloatInText = !!value;
+    break;
   case nrrdIoStateCharsPerLine:
     if (value < 40) {
       biffAddf(NRRD, "%s: %d charsPerLine is awfully small", me, value);
@@ -165,6 +168,9 @@ nrrdIoStateGet(NrrdIoState *nio, int parm) {
     break;
   case nrrdIoStateBareText:
     value = !!nio->bareText;
+    break;
+  case nrrdIoStateMoreThanFloatInText:
+    value = !!nio->moreThanFloatInText;
     break;
   case nrrdIoStateCharsPerLine:
     /* HEY: this cast is a bad because nio->charsPerLine is unsigned */
@@ -406,7 +412,8 @@ _nrrdFieldInteresting(const Nrrd *nrrd, NrrdIoState *nio, int field) {
 */
 void
 _nrrdSprintFieldInfo(char **strP, const char *prefix,
-                     const Nrrd *nrrd, NrrdIoState *nio, int field) {
+                     const Nrrd *nrrd, NrrdIoState *nio, int field,
+                     int dropAxis0) {
   static const char me[]="_nrrdSprintFieldInfo";
   char buff[AIR_STRLEN_MED], *fnb, stmp[AIR_STRLEN_SMALL],
     *strtmp=NULL;
@@ -486,7 +493,7 @@ _nrrdSprintFieldInfo(char **strP, const char *prefix,
   case nrrdField_sizes:
     *strP = AIR_CALLOC(fslen + nrrd->dim*(size_tStrlen + 1), char);
     sprintf(*strP, "%s%s:", prefix, fs);
-    for (ii=0; ii<nrrd->dim; ii++) {
+    for (ii=!!dropAxis0; ii<nrrd->dim; ii++) {
       sprintf(buff, " %s", airSprintSize_t(stmp, nrrd->axis[ii].size));
       strcat(*strP, buff);
     }
@@ -494,7 +501,7 @@ _nrrdSprintFieldInfo(char **strP, const char *prefix,
   case nrrdField_spacings:
     *strP = AIR_CALLOC(fslen + nrrd->dim*(doubleStrlen + 1), char);
     sprintf(*strP, "%s%s:", prefix, fs);
-    for (ii=0; ii<nrrd->dim; ii++) {
+    for (ii=!!dropAxis0; ii<nrrd->dim; ii++) {
       airSinglePrintf(NULL, buff, " %.17g", nrrd->axis[ii].spacing);
       strcat(*strP, buff);
     }
@@ -502,7 +509,7 @@ _nrrdSprintFieldInfo(char **strP, const char *prefix,
   case nrrdField_thicknesses:
     *strP = AIR_CALLOC(fslen + nrrd->dim*(doubleStrlen + 1), char);
     sprintf(*strP, "%s%s:", prefix, fs);
-    for (ii=0; ii<nrrd->dim; ii++) {
+    for (ii=!!dropAxis0; ii<nrrd->dim; ii++) {
       airSinglePrintf(NULL, buff, " %.17g", nrrd->axis[ii].thickness);
       strcat(*strP, buff);
     }
@@ -510,7 +517,7 @@ _nrrdSprintFieldInfo(char **strP, const char *prefix,
   case nrrdField_axis_mins:
     *strP = AIR_CALLOC(fslen + nrrd->dim*(doubleStrlen + 1), char);
     sprintf(*strP, "%s%s:", prefix, fs);
-    for (ii=0; ii<nrrd->dim; ii++) {
+    for (ii=!!dropAxis0; ii<nrrd->dim; ii++) {
       airSinglePrintf(NULL, buff, " %.17g", nrrd->axis[ii].min);
       strcat(*strP, buff);
     }
@@ -518,7 +525,7 @@ _nrrdSprintFieldInfo(char **strP, const char *prefix,
   case nrrdField_axis_maxs:
     *strP = AIR_CALLOC(fslen + nrrd->dim*(doubleStrlen + 1), char);
     sprintf(*strP, "%s%s:", prefix, fs);
-    for (ii=0; ii<nrrd->dim; ii++) {
+    for (ii=!!dropAxis0; ii<nrrd->dim; ii++) {
       airSinglePrintf(NULL, buff, " %.17g", nrrd->axis[ii].max);
       strcat(*strP, buff);
     }
@@ -528,7 +535,7 @@ _nrrdSprintFieldInfo(char **strP, const char *prefix,
                        + nrrd->dim*nrrd->spaceDim*(doubleStrlen
                                                    + strlen("(,) ")), char);
     sprintf(*strP, "%s%s: ", prefix, fs);
-    for (ii=0; ii<nrrd->dim; ii++) {
+    for (ii=!!dropAxis0; ii<nrrd->dim; ii++) {
       _nrrdStrcatSpaceVector(*strP, nrrd->spaceDim,
                              nrrd->axis[ii].spaceDirection);
       if (ii < nrrd->dim-1) {
@@ -538,14 +545,14 @@ _nrrdSprintFieldInfo(char **strP, const char *prefix,
     break;
   case nrrdField_centers:
     fdlen = 0;
-    for (ii=0; ii<nrrd->dim; ii++) {
+    for (ii=!!dropAxis0; ii<nrrd->dim; ii++) {
       fdlen += 1 + airStrlen(nrrd->axis[ii].center
                              ? airEnumStr(nrrdCenter, nrrd->axis[ii].center)
                              : NRRD_UNKNOWN);
     }
     *strP = AIR_CALLOC(fslen + fdlen, char);
     sprintf(*strP, "%s%s:", prefix, fs);
-    for (ii=0; ii<nrrd->dim; ii++) {
+    for (ii=!!dropAxis0; ii<nrrd->dim; ii++) {
       sprintf(buff, " %s",
               (nrrd->axis[ii].center
                ? airEnumStr(nrrdCenter, nrrd->axis[ii].center)
@@ -555,14 +562,14 @@ _nrrdSprintFieldInfo(char **strP, const char *prefix,
     break;
   case nrrdField_kinds:
     fdlen = 0;
-    for (ii=0; ii<nrrd->dim; ii++) {
+    for (ii=!!dropAxis0; ii<nrrd->dim; ii++) {
       fdlen += 1 + airStrlen(nrrd->axis[ii].kind
                              ? airEnumStr(nrrdKind, nrrd->axis[ii].kind)
                              : NRRD_UNKNOWN);
     }
     *strP = AIR_CALLOC(fslen + fdlen, char);
     sprintf(*strP, "%s%s:", prefix, fs);
-    for (ii=0; ii<nrrd->dim; ii++) {
+    for (ii=!!dropAxis0; ii<nrrd->dim; ii++) {
       sprintf(buff, " %s",
               (nrrd->axis[ii].kind
                ? airEnumStr(nrrdKind, nrrd->axis[ii].kind)
@@ -576,7 +583,7 @@ _nrrdSprintFieldInfo(char **strP, const char *prefix,
                         ? nrrd->axis[ii].label \
                         : nrrd->axis[ii].units)
     fdlen = 0;
-    for (ii=0; ii<nrrd->dim; ii++) {
+    for (ii=!!dropAxis0; ii<nrrd->dim; ii++) {
       /* The "2*" is because at worst every character needs escaping.
          The "+ 3" for the |" "| between each part */
       fdlen += 2*airStrlen(LABEL_OR_UNITS) + 3;
@@ -584,9 +591,11 @@ _nrrdSprintFieldInfo(char **strP, const char *prefix,
     fdlen += 1; /* for '\0' */
     *strP = AIR_CALLOC(fslen + fdlen, char);
     sprintf(*strP, "%s%s:", prefix, fs);
-    for (ii=0; ii<nrrd->dim; ii++) {
+    for (ii=!!dropAxis0; ii<nrrd->dim; ii++) {
       strcat(*strP, " \"");
-      if (airStrlen(nrrd->axis[ii].label)) {
+      if (nrrdField_labels == field
+          ? airStrlen(nrrd->axis[ii].label)
+          : airStrlen(nrrd->axis[ii].units)) {
         _nrrdWriteEscaped(NULL, *strP, LABEL_OR_UNITS,
                           "\"", _NRRD_WHITESPACE_NOTAB);
       }
@@ -758,10 +767,11 @@ _nrrdSprintFieldInfo(char **strP, const char *prefix,
 */
 void
 _nrrdFprintFieldInfo(FILE *file, const char *prefix,
-                     const Nrrd *nrrd, NrrdIoState *nio, int field) {
+                     const Nrrd *nrrd, NrrdIoState *nio, int field,
+                     int dropAxis0) {
   char *line=NULL;
 
-  _nrrdSprintFieldInfo(&line, prefix, nrrd, nio, field);
+  _nrrdSprintFieldInfo(&line, prefix, nrrd, nio, field, dropAxis0);
   if (line) {
     fprintf(file, "%s\n", line);
     free(line);

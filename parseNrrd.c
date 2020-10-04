@@ -526,35 +526,6 @@ _nrrdSpaceVectorParse(double val[NRRD_SPACE_DIM_MAX],
   return 0;
 }
 
-/*
-** public version of _nrrdSpaceVectorParse, which might not really be
-** needed, but given how _nrrdSpaceVectorParse currently wants a
-** char**, so it can move the pointer to point to the next space
-** vector to parse in a non-const string, this seems like a sane and
-** minimal effort option
-*/
-int
-nrrdSpaceVectorParse(double dir[NRRD_SPACE_DIM_MAX],
-                     const char *_str, unsigned int spaceDim, int useBiff) {
-  static const char me[]="nrrdSpaceVectorParse";
-  airArray *mop;
-  char *str;
-
-  mop = airMopNew();
-  str = airStrdup(_str);
-  airMopAdd(mop, str, airFree, airMopAlways);
-  if (!(dir && _str)) {
-    biffMaybeAddf(useBiff, NRRD, "%s: got NULL pointer", me);
-    airMopError(mop); return 1;
-  }
-  if (_nrrdSpaceVectorParse(dir, &str, spaceDim, useBiff)) {
-    biffMaybeAddf(useBiff, NRRD, "%s: trouble parsing", me);
-    airMopError(mop); return 1;
-  }
-
-  airMopOkay(mop);
-  return 0;
-}
 
 static int
 _nrrdReadNrrdParse_space_directions(FILE *file, Nrrd *nrrd,
@@ -1370,18 +1341,23 @@ _nrrdReadNrrdParse_data_file(FILE *ffile, Nrrd *nrrd,
                     "%s: trouble with number of datafiles", me);
       airMopError(mop); return 1;
     }
-  } else if (!strncmp(info, NRRD_LIST_FLAG, strlen(NRRD_LIST_FLAG))) {
+  } else if (!strncmp(info, NRRD_LIST_FLAG, strlen(NRRD_LIST_FLAG)) ||
+             !strncmp(info, NRRD_SKIPLIST_FLAG, strlen(NRRD_SKIPLIST_FLAG))) {
+    int skiplist;
+    unsigned int lineidx;
     /* ---------------------------------------------------------- */
-    /* ------------------------- LIST --------------------------- */
+    /* -------------------- LIST or SKIPLIST -------------------- */
     /* ---------------------------------------------------------- */
     _CHECK_HAVE_DIM;
+    skiplist = !strncmp(info, NRRD_SKIPLIST_FLAG, strlen(NRRD_SKIPLIST_FLAG));
     if (_nrrdHeaderCheck(nrrd, nio, AIR_TRUE)) {
-      biffMaybeAddf(useBiff, NRRD, "%s: NRRD header is incomplete. \""
-                    NRRD_LIST_FLAG "\" data file specification must be "
-                    "contiguous with end of header!", me);
+      biffMaybeAddf(useBiff, NRRD, "%s: NRRD header is incomplete. "
+                    "\"%s\" data file specification must be "
+                    "contiguous with end of header!", me,
+                    skiplist ? NRRD_SKIPLIST_FLAG : NRRD_LIST_FLAG);
       airMopError(mop); return 1;
     }
-    info += strlen(NRRD_LIST_FLAG);
+    info += strlen(skiplist ? NRRD_SKIPLIST_FLAG : NRRD_LIST_FLAG);
     if (info[0]) {
       if (1 == sscanf(info, "%u", &(nio->dataFileDim))) {
         if (!AIR_IN_CL(1, nio->dataFileDim, nrrd->dim)) {
@@ -1391,27 +1367,59 @@ _nrrdReadNrrdParse_data_file(FILE *ffile, Nrrd *nrrd,
           airMopError(mop); return 1;
         }
       } else {
-        biffMaybeAddf(useBiff, NRRD, "%s: couldn't parse info after \""
-                      NRRD_LIST_FLAG "\" as an int", me);
+        biffMaybeAddf(useBiff, NRRD, "%s: couldn't parse info after "
+                      "\"%s\" as an int", me,
+                      skiplist ? NRRD_SKIPLIST_FLAG : NRRD_LIST_FLAG);
         airMopError(mop); return 1;
       }
     } else {
-      /* nothing after NRRD_LIST_FLAG, so dataFileDim is implicit */
+      /* nothing after NRRD_LIST_FLAG or NRRD_SKIPLIST_FLAG,
+         so dataFileDim is implicit */
       nio->dataFileDim = nrrd->dim-1;
     }
     /* read in all the datafile names */
+    lineidx = 0;
     do {
       /* yes, nio->line is re-used/over-written here, but I don't
          think that's a problem */
       if (_nrrdOneLine(&linelen, nio, ffile)) {
         biffMaybeAddf(useBiff, NRRD,
-                      "%s: trouble getting file name line", me);
+                      "%s: trouble getting file name line %u", me, lineidx);
         airMopError(mop); return 1;
       }
       if (linelen > 0) {
-        tmp = airArrayLenIncr(nio->dataFNArr, 1);
-        nio->dataFN[tmp] = airStrdup(nio->line);
+        /* we got a non-empty line */
+        if (skiplist) {
+          char *lhere;
+          long int oneskip;
+          if (1 != airSingleSscanf(nio->line, "%ld", &oneskip)) {
+            biffMaybeAddf(useBiff, NRRD,
+                          "%s: couldn't parse skip on list line %u",
+                          me, lineidx);
+            airMopError(mop); return 1;
+          }
+          lhere = strchr(nio->line, ' ');
+          if (!lhere) {
+            biffMaybeAddf(useBiff, NRRD, "%s: didn't see space after "
+                          "skip on list line %u", me, lineidx);
+            airMopError(mop); return 1;
+          }
+          lhere++;
+          if (!(lhere[0])) {
+            biffMaybeAddf(useBiff, NRRD, "%s: didn't see filename after "
+                          "skip and space on list line %u", me, lineidx);
+            airMopError(mop); return 1;
+          }
+          airArrayLenIncr(nio->dataFSkipArr, 1);
+          nio->dataFSkip[lineidx] = oneskip;
+          airArrayLenIncr(nio->dataFNArr, 1);
+          nio->dataFN[lineidx] = airStrdup(lhere);
+        } else {
+          airArrayLenIncr(nio->dataFNArr, 1);
+          nio->dataFN[lineidx] = airStrdup(nio->line);
+        }
       }
+      ++lineidx;
     } while (linelen > 0);
     if (_nrrdDataFNCheck(nio, nrrd, useBiff)) {
       biffMaybeAddf(useBiff, NRRD,
@@ -1477,3 +1485,73 @@ int
 
 /* kernel parsing is all in kernel.c */
 
+/* nrrdStringValsParse[]: parse N values of given type from string
+   NB: based on air/parseAir.c
+*/
+#define P_ARGS (void *_out, const char *_s, const char *sep, size_t n)
+#define P_BODY(type, ntype)                               \
+  size_t i;                                               \
+  char *tmp, *s, *last;                                   \
+  const char *format;                                     \
+  type *out;                                              \
+                                                          \
+  /* if we got NULL, there's nothing to do */             \
+  if (!(_out && _s && sep))                               \
+    return 0;                                             \
+  format = nrrdTypePrintfStr[ntype];                      \
+  out = (type*)_out;                                      \
+  /* copy the input so that we don't change it */         \
+  s = airStrdup(_s);                                      \
+                                                          \
+  /* keep calling airStrtok() until we have everything */ \
+  for (i=0; i<n; i++) {                                   \
+    tmp = airStrtok(i ? NULL : s, sep, &last);            \
+    if (!tmp) {                                           \
+      free(s);                                            \
+      return i;                                           \
+    }                                                     \
+    if (1 != airSingleSscanf(tmp, format, out+i)) {       \
+      free(s);                                            \
+      return i;                                           \
+    }                                                     \
+  }                                                       \
+  free(s);                                                \
+  return n
+
+static size_t   _parseChar P_ARGS { P_BODY(          char,   nrrdTypeChar); }
+static size_t  _parseUChar P_ARGS { P_BODY( unsigned char,  nrrdTypeUChar); }
+static size_t  _parseShort P_ARGS { P_BODY(         short,  nrrdTypeShort); }
+static size_t _parseUShort P_ARGS { P_BODY(unsigned short, nrrdTypeUShort); }
+static size_t    _parseInt P_ARGS { P_BODY(           int,    nrrdTypeInt); }
+static size_t   _parseUInt P_ARGS { P_BODY(  unsigned int,   nrrdTypeUInt); }
+static size_t  _parseLLong P_ARGS { P_BODY(      airLLong,  nrrdTypeLLong); }
+static size_t _parseULLong P_ARGS { P_BODY(     airULLong, nrrdTypeULLong); }
+static size_t  _parseFloat P_ARGS { P_BODY(         float,  nrrdTypeFloat); }
+static size_t _parseDouble P_ARGS { P_BODY(        double, nrrdTypeDouble); }
+static size_t _parseNoop(void *out, const char *s, const char *sep, size_t n) {
+  AIR_UNUSED(out);
+  AIR_UNUSED(s);
+  AIR_UNUSED(sep);
+  AIR_UNUSED(n);
+  return 0;
+}
+#undef P_ARGS
+#undef P_BODY
+
+size_t
+(*const nrrdStringValsParse[NRRD_TYPE_MAX+1])(void *out, const char *s,
+                                              const char *sep, size_t n)
+= {
+   _parseNoop, /* 0 = unknown */
+   _parseChar,
+   _parseUChar,
+   _parseShort,
+   _parseUShort,
+   _parseInt,
+   _parseUInt,
+   _parseLLong,
+   _parseULLong,
+   _parseFloat,
+   _parseDouble,
+   _parseNoop /* block */
+};

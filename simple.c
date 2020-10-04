@@ -52,6 +52,10 @@ nrrdSpaceDimension(int space) {
     return 0;
   }
   switch (space) {
+  case nrrdSpaceRightUp:
+  case nrrdSpaceRightDown:
+    ret = 2;
+    break;
   case nrrdSpaceRightAnteriorSuperior:
   case nrrdSpaceLeftAnteriorSuperior:
   case nrrdSpaceLeftPosteriorSuperior:

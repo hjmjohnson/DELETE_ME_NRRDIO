@@ -97,8 +97,11 @@ extern const NrrdEncoding _nrrdEncodingAscii;
 extern const NrrdEncoding _nrrdEncodingHex;
 extern const NrrdEncoding _nrrdEncodingGzip;
 extern const NrrdEncoding _nrrdEncodingBzip2;
+extern const NrrdEncoding _nrrdEncodingZRL;
 
 /* read.c */
+extern int _nrrdByteSkipSkip(FILE *dataFile, Nrrd *nrrd, NrrdIoState *nio,
+                             long int byteSkip);
 extern int _nrrdCalloc(Nrrd *nrrd, NrrdIoState *nio, FILE *file);
 extern char _nrrdFieldSep[];
 
@@ -142,10 +145,10 @@ extern int _nrrdFieldInteresting(const Nrrd *nrrd, NrrdIoState *nio,
                                  int field);
 extern void _nrrdSprintFieldInfo(char **strP, const char *prefix,
                                  const Nrrd *nrrd, NrrdIoState *nio,
-                                 int field);
+                                 int field, int dropAxis0);
 extern void _nrrdFprintFieldInfo(FILE *file, const char *prefix,
                                  const Nrrd *nrrd, NrrdIoState *nio,
-                                 int field);
+                                 int field, int dropAxis0);
 
 /* parseNrrd.c */
 extern int _nrrdReadNrrdParseField(NrrdIoState *nio, int useBiff);

@@ -1116,7 +1116,7 @@ nrrdOrientationReduce(Nrrd *nout, const Nrrd *nin,
   NrrdAxisInfo *axis;
 
   if (!(nout && nin)) {
-    biffAddf(NRRD, "%s: got NULL spacing", me);
+    biffAddf(NRRD, "%s: got NULL pointer", me);
     return 1;
   }
 

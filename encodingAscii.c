@@ -61,7 +61,7 @@ _nrrdEncodingAscii_read(FILE *file, void *_data, size_t elNum,
          echo "0 0 0 0 1 0 0 0 0" \
           | unu reshape -s 9 1 1 \
           | unu pad -min 0 0 0 -max 8 8 8 \
-          | unu make -s 9 9 9 -t float -e ascii -ls 9 \
+          | unu make -s 9 9 9 -t float -e ascii -ls 10 \
             -spc LPS -orig "(0,0,0)" -dirs "(1,0,0) (0,1,0) (0,0,1)"
        This particular case is resolved by changing AIR_STRLEN_HUGE
        to AIR_STRLEN_HUGE*100, but the general problem remains.  This
@@ -118,6 +118,7 @@ _nrrdEncodingAscii_write(FILE *file, const void *_data, size_t elNum,
   size_t bufflen, linelen;
   const char *data;
   size_t I;
+  int newlined=AIR_FALSE;
 
   if (nrrdTypeBlock == nrrd->type) {
     biffAddf(NRRD, "%s: can't write nrrd type %s to %s", me,
@@ -131,10 +132,12 @@ _nrrdEncodingAscii_write(FILE *file, const void *_data, size_t elNum,
     nrrdSprint[nrrd->type](buff, data);
     if (1 == nrrd->dim) {
       fprintf(file, "%s\n", buff);
+      newlined = AIR_TRUE;
     } else if (nrrd->dim == 2
                && nrrd->axis[0].size <= nio->valsPerLine) {
-      fprintf(file, "%s%c", buff,
-              (I+1)%(nrrd->axis[0].size) ? ' ' : '\n');
+      int nonewline = AIR_CAST(int, (I+1)%(nrrd->axis[0].size));
+      fprintf(file, "%s%c", buff, nonewline ? ' ' : '\n');
+      newlined = !nonewline;
     } else {
       bufflen = strlen(buff);
       if (linelen+bufflen+1 <= nio->charsPerLine) {
@@ -144,11 +147,16 @@ _nrrdEncodingAscii_write(FILE *file, const void *_data, size_t elNum,
         fprintf(file, "\n%s", buff);
         linelen = bufflen;
       }
+      newlined = AIR_FALSE;
     }
     data += nrrdElementSize(nrrd);
   }
-  /* just to be sure, we always end with a carraige return */
-  fprintf(file, "\n");
+  if (!newlined) {
+    /* always end file with a carraige return; but guard with this
+       conditional so we don't create a final blank line */
+    fprintf(file, "\n");
+  }
+  fflush(file);
 
   return 0;
 }

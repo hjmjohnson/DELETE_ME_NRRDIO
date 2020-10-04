@@ -114,7 +114,9 @@ prevents variables ending with .N* where N is some number, from inclusion.
 #define airSprintPtrdiff_t itk_airSprintPtrdiff_t
 #define airSprintSize_t itk_airSprintSize_t
 #define airTeemReleaseDate itk_airTeemReleaseDate
+#define airTeemReleaseDone itk_airTeemReleaseDone
 #define airTeemVersion itk_airTeemVersion
+#define airTeemVersionSprint itk_airTeemVersionSprint
 #define biffAdd itk_biffAdd
 #define biffAddf itk_biffAddf
 #define biffCheck itk_biffCheck
@@ -168,6 +170,7 @@ prevents variables ending with .N* where N is some number, from inclusion.
 #define nrrdDefaultWriteBareText itk_nrrdDefaultWriteBareText
 #define nrrdDefaultWriteCharsPerLine itk_nrrdDefaultWriteCharsPerLine
 #define nrrdDefaultWriteEncodingType itk_nrrdDefaultWriteEncodingType
+#define nrrdDefaultWriteMoreThanFloatInText itk_nrrdDefaultWriteMoreThanFloatInText
 #define nrrdDefaultWriteValsPerLine itk_nrrdDefaultWriteValsPerLine
 #define nrrdStateAlwaysSetContent itk_nrrdStateAlwaysSetContent
 #define nrrdStateDisableContent itk_nrrdStateDisableContent
@@ -291,13 +294,14 @@ prevents variables ending with .N* where N is some number, from inclusion.
 #define _nrrdDataFNCheck itk__nrrdDataFNCheck
 #define _nrrdDataFNNumber itk__nrrdDataFNNumber
 #define _nrrdReadNrrdParseField itk__nrrdReadNrrdParseField
-#define _nrrdSpaceVectorParse itk__nrrdSpaceVectorParse
 #define nrrdFieldInfoParse itk_nrrdFieldInfoParse
+#define nrrdStringValsParse itk_nrrdStringValsParse
 #define _nrrdGzClose itk__nrrdGzClose
 #define _nrrdGzDummySymbol itk__nrrdGzDummySymbol
 #define _nrrdGzOpen itk__nrrdGzOpen
 #define _nrrdGzRead itk__nrrdGzRead
 #define _nrrdGzWrite itk__nrrdGzWrite
+#define _nrrdByteSkipSkip itk__nrrdByteSkipSkip
 #define _nrrdCalloc itk__nrrdCalloc
 #define _nrrdFieldSep itk__nrrdFieldSep
 #define _nrrdHeaderStringOneLine itk__nrrdHeaderStringOneLine
@@ -343,9 +347,6 @@ prevents variables ending with .N* where N is some number, from inclusion.
 #define nrrdFormatNRRD itk_nrrdFormatNRRD
 #define nrrdIoStateDataFileIterBegin itk_nrrdIoStateDataFileIterBegin
 #define nrrdIoStateDataFileIterNext itk_nrrdIoStateDataFileIterNext
-#define _nrrdEncodingUnknown itk__nrrdEncodingUnknown
-#define nrrdEncodingArray itk_nrrdEncodingArray
-#define nrrdEncodingUnknown itk_nrrdEncodingUnknown
 #define _nrrdEncodingRaw itk__nrrdEncodingRaw
 #define nrrdEncodingRaw itk_nrrdEncodingRaw
 #define _nrrdEncodingAscii itk__nrrdEncodingAscii
@@ -354,6 +355,11 @@ prevents variables ending with .N* where N is some number, from inclusion.
 #define nrrdEncodingHex itk_nrrdEncodingHex
 #define _nrrdEncodingGzip itk__nrrdEncodingGzip
 #define nrrdEncodingGzip itk_nrrdEncodingGzip
+#define _nrrdEncodingZRL itk__nrrdEncodingZRL
+#define nrrdEncodingZRL itk_nrrdEncodingZRL
+#define _nrrdEncodingUnknown itk__nrrdEncodingUnknown
+#define nrrdEncodingArray itk_nrrdEncodingArray
+#define nrrdEncodingUnknown itk_nrrdEncodingUnknown
 #define nrrdCrop itk_nrrdCrop
 #define nrrdSlice itk_nrrdSlice
 #define _nrrdEncodingBzip2 itk__nrrdEncodingBzip2

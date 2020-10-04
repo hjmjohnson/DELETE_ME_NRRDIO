@@ -32,7 +32,7 @@
 
 #ifdef TEEM_PNG
 #  ifndef TEEM_ZLIB
-#    error TEEM_PNG set, but TEEM_ZLIB not set 
+#    error TEEM_PNG set, but TEEM_ZLIB not set
 #  endif
 #endif
 
