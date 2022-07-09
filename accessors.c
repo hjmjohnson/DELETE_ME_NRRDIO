@@ -23,6 +23,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
+/* clang-format off */
 #include "NrrdIO.h"
 #include "privateNrrd.h"
 #include "float.h"

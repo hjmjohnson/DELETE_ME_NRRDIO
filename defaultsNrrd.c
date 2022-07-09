@@ -69,11 +69,11 @@ int nrrdStateKindNoop = AIR_FALSE;
 /* these are helper functions for min/max testing */
 airLLong
 _nrrdLLongMaxHelp(airLLong val) {
-  return val*2 + 1;
+  return val * 2 + 1;
 }
 airLLong
 _nrrdLLongMinHelp(airLLong val) {
-  return val*2;
+  return val * 2;
 }
 airULLong
 _nrrdULLongMaxHelp(airULLong val) {

@@ -24,7 +24,7 @@
 */
 
 #include "NrrdIO.h"
-
+/* clang-format off */
 /*
 ** Rules of thumb for editing these things.  The airEnum definitions are
 ** unfortunately EXTREMELY sensitive to small typo errors, and there is

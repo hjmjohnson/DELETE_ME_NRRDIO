@@ -27,11 +27,11 @@
 #include "privateAir.h"
 /* timer functions */
 #ifdef _WIN32
-#include <io.h>
-#include <fcntl.h>
-#include <time.h>
+#  include <io.h>
+#  include <fcntl.h>
+#  include <time.h>
 #else
-#include <sys/time.h>
+#  include <sys/time.h>
 #endif
 
 /*
@@ -43,12 +43,9 @@
 ** the Teem version number and release date.  Originated in version 1.5;
 ** use of TEEM_VERSION #defines started in 1.9
 */
-const char *
-airTeemVersion = TEEM_VERSION_STRING;
-const int
-airTeemReleaseDone = AIR_FALSE;
-const char *
-airTeemReleaseDate = "maybe 2019 or 2020";
+const char *airTeemVersion = TEEM_VERSION_STRING;
+const int airTeemReleaseDone = AIR_FALSE;
+const char *airTeemReleaseDate = "maybe 2019 or 2020";
 
 /*
 ******** airTeemVersionSprint
@@ -57,17 +54,15 @@ airTeemReleaseDate = "maybe 2019 or 2020";
 */
 void
 airTeemVersionSprint(char buff[AIR_STRLEN_LARGE]) {
-  sprintf(buff, "Teem version %s, %s%s%s",
-          airTeemVersion,
-          airTeemReleaseDone ? "released on " : "",
-          airTeemReleaseDate,
+  sprintf(buff, "Teem version %s, %s%s%s", airTeemVersion,
+          airTeemReleaseDone ? "released on " : "", airTeemReleaseDate,
           airTeemReleaseDone ? "" : " (not yet released)");
   return;
 }
 
 double
 _airSanityHelper(double val) {
-  return val*val*val;
+  return val * val * val;
 }
 
 /*
@@ -147,7 +142,7 @@ FILE *
 airFclose(FILE *file) {
 
   if (file) {
-    if (!( stdin == file || stdout == file || stderr == file )) {
+    if (!(stdin == file || stdout == file || stderr == file)) {
       fclose(file);
     }
   }
@@ -175,9 +170,9 @@ airFclose(FILE *file) {
 int
 airSinglePrintf(FILE *file, char *str, const char *_fmt, ...) {
   char *fmt, buff[AIR_STRLEN_LARGE];
-  double val=0, gVal, fVal;
+  double val = 0, gVal, fVal;
   int ret, isF, isD, cls;
-  char *conv=NULL, *p0, *p1, *p2, *p3, *p4, *p5;
+  char *conv = NULL, *p0, *p1, *p2, *p3, *p4, *p5;
   va_list ap;
 
   va_start(ap, _fmt);
@@ -221,7 +216,7 @@ airSinglePrintf(FILE *file, char *str, const char *_fmt, ...) {
       }
       break;
     }
-#define PRINT(F, S, C, V) ((F) ? fprintf((F),(C),(V)) : sprintf((S),(C),(V)))
+#define PRINT(F, S, C, V) ((F) ? fprintf((F), (C), (V)) : sprintf((S), (C), (V)))
     switch (cls) {
     case airFP_SNAN:
     case airFP_QNAN:
@@ -276,7 +271,7 @@ airSprintSize_t(char _str[AIR_STRLEN_SMALL], size_t val) {
   if (!_str) {
     return NULL;
   }
-  si = AIR_STRLEN_SMALL-1;
+  si = AIR_STRLEN_SMALL - 1;
   str[si] = '\0';
   do {
     str[--si] = AIR_CAST(char, (val % 10) + '0');
@@ -301,7 +296,7 @@ airSprintPtrdiff_t(char _str[AIR_STRLEN_SMALL], ptrdiff_t val) {
   if (!_str) {
     return NULL;
   }
-  si = AIR_STRLEN_SMALL-1;
+  si = AIR_STRLEN_SMALL - 1;
   str[si] = '\0';
   sign = (val < 0 ? -1 : 1);
   do {
