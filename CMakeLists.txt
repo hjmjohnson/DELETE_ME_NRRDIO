@@ -49,6 +49,7 @@ encodingBzip2.c
 encodingGzip.c
 encodingHex.c
 encodingRaw.c
+encodingZRL.c
 endianAir.c
 endianNrrd.c
 enum.c
