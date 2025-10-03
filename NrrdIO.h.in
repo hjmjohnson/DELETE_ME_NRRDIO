@@ -87,7 +87,9 @@ typedef unsigned long long airULLong;
 #  define AIR_ULLONG(x)  x##ull
 #endif
 
+#ifndef AIR_PI
 #define AIR_PI 3.14159265358979323846
+#endif
 
 /*
  * These serve as conservative estimates on how large various strings might end up being.

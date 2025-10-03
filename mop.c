@@ -61,7 +61,7 @@ airMopSub() and airMopUnMem were created
 #define AIR_MOP_INCR 10
 
 airArray *
-airMopNew(void) {
+airMopNew() {
 
   return airArrayNew(NULL, NULL, sizeof(airMop), AIR_MOP_INCR);
 }

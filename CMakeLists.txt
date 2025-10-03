@@ -22,10 +22,9 @@
 #
 # 3. This notice may not be removed or altered from any source distribution.
 #
-
-CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
-PROJECT(NrrdIO)
-INCLUDE_REGULAR_EXPRESSION("^.*.h$")
+cmake_minimum_required(VERSION 3.20...3.31)
+project(ITK3P_NrrdIO)
+include_regular_expression("^.*.h$")
 
 #
 # This CMake file configures the NrrdIO library build.  NrrdIO
@@ -34,44 +33,115 @@ INCLUDE_REGULAR_EXPRESSION("^.*.h$")
 # package. See http://teem.sourceforge.net for more information.
 #
 
-SET(nrrdio_SRCS comment.c enumsNrrd.c mop.c string.c 754.c defaultsNrrd.c
-parseAir.c format.c parseNrrd.c formatEPS.c encoding.c
-formatNRRD.c encodingAscii.c formatPNG.c encodingBzip2.c
-formatPNM.c accessors.c encodingGzip.c formatText.c
-array.c encodingHex.c formatVTK.c read.c arraysNrrd.c encodingRaw.c
-gzio.c reorder.c write.c axis.c endianAir.c  keyvalue.c
-biffbiff.c biffmsg.c endianNrrd.c methodsNrrd.c  sane.c enum.c
-miscAir.c simple.c )
-
+SET(nrrdio_SRCS
+754.c
+accessors.c
+array.c
+arraysNrrd.c
+axis.c
+biffbiff.c
+biffmsg.c
+comment.c
+defaultsNrrd.c
+encoding.c
+encodingAscii.c
+encodingBzip2.c
+encodingGzip.c
+encodingHex.c
+encodingRaw.c
+endianAir.c
+endianNrrd.c
+enum.c
+enumsNrrd.c
+format.c
+formatEPS.c
+formatNRRD.c
+formatPNG.c
+formatPNM.c
+formatText.c
+formatVTK.c
+gzio.c
+keyvalue.c
+methodsNrrd.c
+miscAir.c
+mop.c
+parseAir.c
+parseNrrd.c
+read.c
+reorder.c
+sane.c
+simple.c
+string.c
+subset.c
+write.c
+)
 # Turn on TEEM_BUILD so that the proper dll export def's are
 # used on windows builds.
 ADD_DEFINITIONS(-DTEEM_BUILD=1)
 
-#The QNANHIBIT variable is configured by the root level CMakeLists.txt
-IF(QNANHIBIT)
-  ADD_DEFINITIONS(-DTEEM_QNANHIBIT=1)
-ELSE(QNANHIBIT)
-  ADD_DEFINITIONS(-DTEEM_QNANHIBIT=0)
-ENDIF(QNANHIBIT)
+if(NOT BUILD_SHARED_LIBS)
+ set(TEEM_STATIC 1)
+endif()
 
-#DirectIO is the fast way to do multi-gigabyte I/O and currently only available
-#for SGI platforms.  Use of DirectIO is enabled manually for now.
-#OPTION(USE_DIRECTIO "Use DirectIO for Nrrd file IO.  Only valid on SGI systems." 0)
-#MARK_AS_ADVANCED(USE_DIRECTIO)
-#IF(USE_DIRECTIO)
-#  ADD_DEFINITIONS(-DTEEM_DIO=1)
-#ELSE(USE_DIRECTIO)
-  ADD_DEFINITIONS(-DTEEM_DIO=0)
-#ENDIF(USE_DIRECTIO)
+# Configure (and learn how to find) NrrdIO.h
+CONFIGURE_FILE(${ITK3P_NrrdIO_SOURCE_DIR}/NrrdIO.h.in
+  ${ITK3P_NrrdIO_BINARY_DIR}/NrrdIO.h)
+INCLUDE_DIRECTORIES(
+  ${ITK3P_NrrdIO_BINARY_DIR}
+)
+
+set(MANGLE_PREFIX itk)
+configure_file(${ITK3P_NrrdIO_SOURCE_DIR}/itk_NrrdIO_mangle.h.in
+  ${ITK3P_NrrdIO_BINARY_DIR}/itk_NrrdIO_mangle.h
+  @ONLY)
+
+#-----------------------------------------------------------------------------
+# Find platform-specific differences in the handling of IEEE floating point
+# special values.
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/TestQnanhibit.cmake)
+test_qnanhibit(QNANHIBIT_VALUE ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
+if(QNANHIBIT_VALUE)
+   set(QNANHIBIT 1 CACHE INTERNAL "The 22nd bit of 32-bit floating-point quiet NaN.")
+else()
+   set(QNANHIBIT 0 CACHE INTERNAL "The 22nd bit of 32-bit floating-point quiet NaN.")
+endif()
+
+#The QNANHIBIT variable is configured by the root level CMakeLists.txt
+if(QNANHIBIT)
+  add_definitions(-DTEEM_QNANHIBIT=1)
+else()
+  add_definitions(-DTEEM_QNANHIBIT=0)
+endif()
+
 
 # Possibly turn on usage of zlib compression (requires linking with libz)
 # (i.e., programs compiled with ITKNrrdIO must also be compiled with zlib)
-#ADD_DEFINITIONS(-DTEEM_ZLIB=1)
+add_definitions(-DTEEM_ZLIB=1)
 
-ADD_LIBRARY(NrrdIO ${nrrdio_SRCS} )
+add_library(ITKNrrdIO ${nrrdio_SRCS} )
 
-## These are ITK-specific
-#TARGET_LINK_LIBRARIES(NrrdIO ${ITK_ZLIB_LIBRARIES} )
-#INSTALL_TARGETS(/lib/InsightToolkit ITKNrrdIO)
-#INSTALL_FILES(/include/InsightToolkit/Utilities/NrrdIO "(\\.h)$")
+if(UNIX)
+  target_link_libraries(ITKNrrdIO ${ITKZLIB_LIBRARIES} m)
+else()
+  target_link_libraries(ITKNrrdIO ${ITKZLIB_LIBRARIES})
+endif()
 
+if(ITK_LIBRARY_PROPERTIES)
+  set_target_properties(ITKNrrdIO PROPERTIES ${ITK_LIBRARY_PROPERTIES})
+endif()
+
+install(TARGETS ITKNrrdIO
+  EXPORT ${ITK3P_INSTALL_EXPORT_NAME}
+  RUNTIME DESTINATION ${ITK3P_INSTALL_RUNTIME_DIR} COMPONENT RuntimeLibraries
+  LIBRARY DESTINATION ${ITK3P_INSTALL_LIBRARY_DIR} COMPONENT RuntimeLibraries
+  ARCHIVE DESTINATION ${ITK3P_INSTALL_ARCHIVE_DIR} COMPONENT Development
+  )
+
+install(FILES ${ITK3P_NrrdIO_BINARY_DIR}/NrrdIO.h ${ITK3P_NrrdIO_BINARY_DIR}/itk_NrrdIO_mangle.h
+  DESTINATION ${ITK3P_INSTALL_INCLUDE_DIR} # TODO: itk_NrrdIO.h #include "itkNrrdIO/NrrdIO.h"
+  COMPONENT Development)
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing")
+endif()
