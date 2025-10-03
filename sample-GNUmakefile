@@ -46,7 +46,7 @@ CC = cc
 ### Flags to cc. These now include all the various warnings that proved
 ### useful when cleaning up NrrdIO
 ###
-CCFLAGS = -O2 -std=c89 -pedantic \
+CCFLAGS = -O2 -std=c11 -pedantic \
    -W -Wall -Wextra -Wno-long-long -Wno-overlength-strings \
    -fstrict-aliasing -Wstrict-aliasing=2 -fstrict-overflow -Wstrict-overflow=5 \
    -ftrapv -fshort-enums -fno-common \
