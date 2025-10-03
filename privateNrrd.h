@@ -38,7 +38,6 @@ extern "C" {
 
 #define _NRRD_WHITESPACE_NOTAB " \n\r\v\f" /* K+R pg. 157 */
 
-
 /*
 ** _NRRD_SPACING
 **
@@ -151,7 +150,7 @@ extern int _nrrdMaybeAllocMaybeZero_nva(Nrrd *nrrd, int type, unsigned int dim,
 #  if TEEM_VTK_MANGLE
 #    include "vtk_zlib_mangle.h"
 #  endif
-#include <zlib.h>
+#  include <zlib.h>
 
 /* gzio.c */
 extern gzFile _nrrdGzOpen(FILE *fd, const char *mode);
@@ -162,7 +161,6 @@ extern int _nrrdGzWrite(gzFile file, const void *buf, unsigned int len,
 #else
 extern int _nrrdGzDummySymbol(void);
 #endif
-
 
 #ifdef __cplusplus
 }

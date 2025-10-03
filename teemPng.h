@@ -23,7 +23,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-
 /*
 ** the end result of this is that the source file which includes
 ** this can be sure that TEEM_ZLIB is set, so that the required
@@ -37,5 +36,5 @@
 #endif
 
 #if TEEM_PNG && TEEM_VTK_MANGLE
-#include "vtk_png_mangle.h"
+#  include "vtk_png_mangle.h"
 #endif

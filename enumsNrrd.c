@@ -814,4 +814,3 @@ _nrrdSpacingStatus = {
 };
 const airEnum *const
 nrrdSpacingStatus = &_nrrdSpacingStatus;
-

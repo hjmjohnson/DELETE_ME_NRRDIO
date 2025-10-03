@@ -23,7 +23,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -51,12 +50,9 @@
 #define TEEM_VERSION_STRING "1.12.0" /* cannot be so easily compared */
 /* clang-format on */
 
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 #if defined(_WIN32) && !defined(__CYGWIN__) && !defined(TEEM_STATIC)
 #  if defined(TEEM_BUILD) || defined(air_EXPORTS) || defined(teem_EXPORTS)
@@ -85,7 +81,7 @@ typedef unsigned long long airULLong;
 #endif
 
 #ifndef AIR_PI
-#define AIR_PI 3.14159265358979323846
+#  define AIR_PI 3.14159265358979323846
 #endif
 
 /*
@@ -175,7 +171,8 @@ NRRDIO_EXPORT int airEnumValCheck(const airEnum *enm, int val);
 NRRDIO_EXPORT const char *airEnumStr(const airEnum *enm, int val);
 NRRDIO_EXPORT const char *airEnumDesc(const airEnum *enm, int val);
 NRRDIO_EXPORT int airEnumVal(const airEnum *enm, const char *str);
-NRRDIO_EXPORT char *airEnumFmtDesc(const airEnum *enm, int val, int canon, const char *fmt);
+NRRDIO_EXPORT char *airEnumFmtDesc(const airEnum *enm, int val, int canon,
+                                   const char *fmt);
 NRRDIO_EXPORT void airEnumPrint(FILE *file, const airEnum *enm);
 
 /*
@@ -235,16 +232,15 @@ typedef struct {
 
 } airArray;
 NRRDIO_EXPORT airArray *airArrayNew(void **dataP, unsigned int *lenP, size_t unit,
-                                 unsigned int incr);
+                                    unsigned int incr);
 NRRDIO_EXPORT void airArrayStructCB(airArray *a, void (*initCB)(void *),
-                                 void (*doneCB)(void *));
+                                    void (*doneCB)(void *));
 NRRDIO_EXPORT void airArrayPointerCB(airArray *a, void *(*allocCB)(void),
-                                  void *(*freeCB)(void *));
+                                     void *(*freeCB)(void *));
 NRRDIO_EXPORT void airArrayLenSet(airArray *a, unsigned int newlen);
 NRRDIO_EXPORT unsigned int airArrayLenIncr(airArray *a, int delta);
 NRRDIO_EXPORT airArray *airArrayNix(airArray *a);
 NRRDIO_EXPORT airArray *airArrayNuke(airArray *a);
-
 
 /*
 ******** airFP enum
@@ -286,19 +282,19 @@ typedef union {
 } airDouble;
 NRRDIO_EXPORT const airEnum *const airFPClass_ae;
 NRRDIO_EXPORT float airFPPartsToVal_f(unsigned int sign,
-                                   unsigned int expo,
-                                   unsigned int mant);
+                                      unsigned int expo,
+                                      unsigned int mant);
 NRRDIO_EXPORT void airFPValToParts_f(unsigned int *signP, unsigned int *expoP,
-                                  unsigned int *mantP, float v);
+                                     unsigned int *mantP, float v);
 NRRDIO_EXPORT double airFPPartsToVal_d(unsigned int sign,
-                                    unsigned int expo,
-                                    unsigned int mant0,
-                                    unsigned int mant1);
+                                       unsigned int expo,
+                                       unsigned int mant0,
+                                       unsigned int mant1);
 NRRDIO_EXPORT void airFPValToParts_d(unsigned int *signP,
-                                  unsigned int *expoP,
-                                  unsigned int *mant0P,
-                                  unsigned int *mant1P,
-                                  double v);
+                                     unsigned int *expoP,
+                                     unsigned int *mant0P,
+                                     unsigned int *mant1P,
+                                     double v);
 NRRDIO_EXPORT float airFPGen_f(int cls);
 NRRDIO_EXPORT double airFPGen_d(int cls);
 NRRDIO_EXPORT int airFPClass_f(float val);
@@ -313,7 +309,6 @@ NRRDIO_EXPORT int airIsNaN(double d);
 NRRDIO_EXPORT int airIsInf_f(float f);
 NRRDIO_EXPORT int airIsInf_d(double d);
 NRRDIO_EXPORT int airExists(double d);
-
 
 /* changes for for TeemV2:
  *** airParseStrT() are no longer var-args; it was a mistaken way to enforce uniformity
@@ -347,31 +342,31 @@ NRRDIO_EXPORT double airAtod(const char *str);
 NRRDIO_EXPORT int airSingleSscanf(const char *str, const char *fmt, void *ptr);
 NRRDIO_EXPORT const airEnum *const airBool;
 NRRDIO_EXPORT unsigned int airParseStrB(int *out, const char *s, const char *ct,
-                                     unsigned int n);
+                                        unsigned int n);
 NRRDIO_EXPORT unsigned int airParseStrH(short *out, const char *s, const char *ct,
-                                     unsigned int n);
-NRRDIO_EXPORT unsigned int airParseStrUH(unsigned short *out, const char *s, const char *ct,
-                                      unsigned int n);
+                                        unsigned int n);
+NRRDIO_EXPORT unsigned int airParseStrUH(unsigned short *out, const char *s,
+                                         const char *ct, unsigned int n);
 NRRDIO_EXPORT unsigned int airParseStrI(int *out, const char *s, const char *ct,
-                                     unsigned int n);
-NRRDIO_EXPORT unsigned int airParseStrUI(unsigned int *out, const char *s, const char *ct,
-                                      unsigned int n);
+                                        unsigned int n);
+NRRDIO_EXPORT unsigned int airParseStrUI(unsigned int *out, const char *s,
+                                         const char *ct, unsigned int n);
 NRRDIO_EXPORT unsigned int airParseStrL(long int *out, const char *s, const char *ct,
-                                     unsigned int n);
+                                        unsigned int n);
 NRRDIO_EXPORT unsigned int airParseStrUL(unsigned long int *out, const char *s,
-                                      const char *ct, unsigned int n);
+                                         const char *ct, unsigned int n);
 NRRDIO_EXPORT unsigned int airParseStrZ(size_t *out, const char *s, const char *ct,
-                                     unsigned int n);
+                                        unsigned int n);
 NRRDIO_EXPORT unsigned int airParseStrF(float *out, const char *s, const char *ct,
-                                     unsigned int n);
+                                        unsigned int n);
 NRRDIO_EXPORT unsigned int airParseStrD(double *out, const char *s, const char *ct,
-                                     unsigned int n);
+                                        unsigned int n);
 NRRDIO_EXPORT unsigned int airParseStrC(char *out, const char *s, const char *ct,
-                                     unsigned int n);
+                                        unsigned int n);
 NRRDIO_EXPORT unsigned int airParseStrS(char **out, const char *s, const char *ct,
-                                     unsigned int n);
+                                        unsigned int n);
 NRRDIO_EXPORT unsigned int airParseStrE(int *out, const char *s, const char *ct,
-                                     unsigned int n, const airEnum *enm);
+                                        unsigned int n, const airEnum *enm);
 
 /* string.c */
 NRRDIO_EXPORT char *airStrdup(const char *s);
@@ -568,7 +563,6 @@ NRRDIO_EXPORT void airMopDebug(airArray *arr);
 #endif
 /* clang-format on */
 
-
 /*
 ******** AIR_MAX(a,b), AIR_MIN(a,b), AIR_ABS(a)
 **
@@ -681,9 +675,6 @@ NRRDIO_EXPORT void airMopDebug(airArray *arr);
 }
 #endif
 
-
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -725,8 +716,6 @@ NRRDIO_EXPORT char *biffGetDone(const char *key);
 #ifdef __cplusplus
 }
 #endif
-
-
 
 #include <limits.h>
 
@@ -779,13 +768,13 @@ extern "C" {
 ** Chances are, you shouldn't mess with these
 */
 
-#define NRRD_COMMENT_CHAR     '#'
-#define NRRD_FILENAME_INCR    32
-#define NRRD_COMMENT_INCR     16
-#define NRRD_KEYVALUE_INCR    32
-#define NRRD_LIST_FLAG        "LIST"
-#define NRRD_SKIPLIST_FLAG    "SKIPLIST"
-#define NRRD_PNM_COMMENT      "# NRRD>"
+#define NRRD_COMMENT_CHAR  '#'
+#define NRRD_FILENAME_INCR 32
+#define NRRD_COMMENT_INCR  16
+#define NRRD_KEYVALUE_INCR 32
+#define NRRD_LIST_FLAG     "LIST"
+#define NRRD_SKIPLIST_FLAG "SKIPLIST"
+#define NRRD_PNM_COMMENT   "# NRRD>"
 /*                                   this is designed to be robust against the
                                      mungling that xv does, but no promises for
                                      any other image programs */
@@ -807,8 +796,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -1312,12 +1299,9 @@ enum {
   nrrdOriginStatusLast
 };
 
-
 #ifdef __cplusplus
 }
 #endif
-
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -1456,11 +1440,8 @@ extern "C" {
 }
 #endif
 
-
-
 #include <errno.h>
 #include <stddef.h> /* for ptrdiff_t */
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -1835,20 +1816,20 @@ typedef struct NrrdIoState_t {
                                  nrrd format. Probably used in conjunction with
                                  skipData.  (currently for "unu data")
                                  ON WRITE: no semantics */
-    zlibLevel,      /* zlib compression level (0-9, -1 for
-                       default[6], 0 for no compression). */
-    zlibStrategy,   /* zlib compression strategy, can be one
-                       of the nrrdZlibStrategy enums, default is
-                       nrrdZlibStrategyDefault. */
-    bzip2BlockSize, /* block size used for compression,
-                       roughly equivalent to better but slower
-                       (1-9, -1 for default[9]). */
-    learningHeaderStrlen; /* ON WRITE, for nrrds, learn and save the total
-                             length of header into headerStrlen. This is
-                             used to allocate a buffer for header */
-  void *oldData;          /* ON READ: if non-NULL, pointer to space that
-                             has already been allocated for oldDataSize */
-  size_t oldDataSize;     /* ON READ: size of mem pointed to by oldData */
+    zlibLevel,                /* zlib compression level (0-9, -1 for
+                                 default[6], 0 for no compression). */
+    zlibStrategy,             /* zlib compression strategy, can be one
+                                 of the nrrdZlibStrategy enums, default is
+                                 nrrdZlibStrategyDefault. */
+    bzip2BlockSize,           /* block size used for compression,
+                                 roughly equivalent to better but slower
+                                 (1-9, -1 for default[9]). */
+    learningHeaderStrlen;     /* ON WRITE, for nrrds, learn and save the total
+                                 length of header into headerStrlen. This is
+                                 used to allocate a buffer for header */
+  void *oldData;              /* ON READ: if non-NULL, pointer to space that
+                                 has already been allocated for oldDataSize */
+  size_t oldDataSize;         /* ON READ: size of mem pointed to by oldData */
 
   /* The format and encoding.  These are initialized to nrrdFormatUnknown
      and nrrdEncodingUnknown, respectively. USE THESE VALUES for
@@ -1856,7 +1837,6 @@ typedef struct NrrdIoState_t {
   const NrrdFormat *format;
   const NrrdEncoding *encoding;
 } NrrdIoState;
-
 
 /******** defaults (nrrdDefault..) and state (nrrdState..) */
 /* defaultsNrrd.c */
@@ -1912,27 +1892,27 @@ NRRDIO_EXPORT Nrrd *nrrdNix(Nrrd *nrrd);
 NRRDIO_EXPORT Nrrd *nrrdEmpty(Nrrd *nrrd);
 NRRDIO_EXPORT Nrrd *nrrdNuke(Nrrd *nrrd);
 NRRDIO_EXPORT int nrrdWrap_nva(Nrrd *nrrd, void *data, int type, unsigned int dim,
-                             const size_t *size);
+                               const size_t *size);
 NRRDIO_EXPORT int nrrdWrap_va(Nrrd *nrrd, void *data, int type, unsigned int dim,
-                            ... /* size_t sx, sy, .., axis(dim-1) size */);
+                              ... /* size_t sx, sy, .., axis(dim-1) size */);
 NRRDIO_EXPORT void nrrdBasicInfoInit(Nrrd *nrrd, int excludeBitflag);
 NRRDIO_EXPORT int nrrdBasicInfoCopy(Nrrd *nout, const Nrrd *nin, int excludeBitflag);
 NRRDIO_EXPORT int nrrdCopy(Nrrd *nout, const Nrrd *nin);
 NRRDIO_EXPORT int nrrdAlloc_nva(Nrrd *nrrd, int type, unsigned int dim,
-                              const size_t *size);
+                                const size_t *size);
 NRRDIO_EXPORT int nrrdAlloc_va(Nrrd *nrrd, int type, unsigned int dim,
-                             ... /* size_t sx, sy, .., axis(dim-1) size */);
+                               ... /* size_t sx, sy, .., axis(dim-1) size */);
 NRRDIO_EXPORT int nrrdMaybeAlloc_nva(Nrrd *nrrd, int type, unsigned int dim,
-                                   const size_t *size);
+                                     const size_t *size);
 NRRDIO_EXPORT int nrrdMaybeAlloc_va(Nrrd *nrrd, int type, unsigned int dim,
-                                  ... /* size_t sx, sy, .., ax(dim-1) size */);
+                                    ... /* size_t sx, sy, .., ax(dim-1) size */);
 
 /******** axis info related */
 /* axis.c */
 NRRDIO_EXPORT int nrrdKindIsDomain(int kind);
 NRRDIO_EXPORT unsigned int nrrdKindSize(int kind);
 NRRDIO_EXPORT int nrrdAxisInfoCopy(Nrrd *nout, const Nrrd *nin, const int *axmap,
-                                 int excludeBitflag);
+                                   int excludeBitflag);
 NRRDIO_EXPORT void nrrdAxisInfoSet_nva(Nrrd *nin, int axInfo, const void *info);
 NRRDIO_EXPORT void nrrdAxisInfoSet_va(Nrrd *nin, int axInfo, ... /* const void* */);
 NRRDIO_EXPORT void nrrdAxisInfoGet_nva(const Nrrd *nrrd, int axInfo, void *info);
@@ -1940,23 +1920,24 @@ NRRDIO_EXPORT void nrrdAxisInfoGet_va(const Nrrd *nrrd, int axInfo, ... /* ??? *
 NRRDIO_EXPORT double nrrdAxisInfoPos(const Nrrd *nrrd, unsigned int ax, double idx);
 NRRDIO_EXPORT double nrrdAxisInfoIdx(const Nrrd *nrrd, unsigned int ax, double pos);
 NRRDIO_EXPORT void nrrdAxisInfoPosRange(double *loP, double *hiP, const Nrrd *nrrd,
-                                      unsigned int ax, double loIdx, double hiIdx);
+                                        unsigned int ax, double loIdx, double hiIdx);
 NRRDIO_EXPORT void nrrdAxisInfoIdxRange(double *loP, double *hiP, const Nrrd *nrrd,
-                                      unsigned int ax, double loPos, double hiPos);
+                                        unsigned int ax, double loPos, double hiPos);
 NRRDIO_EXPORT void nrrdAxisInfoSpacingSet(Nrrd *nrrd, unsigned int ax);
 NRRDIO_EXPORT void nrrdAxisInfoMinMaxSet(Nrrd *nrrd, unsigned int ax, int defCenter);
 NRRDIO_EXPORT unsigned int nrrdDomainAxesGet(const Nrrd *nrrd,
-                                           unsigned int axisIdx[NRRD_DIM_MAX]);
+                                             unsigned int axisIdx[NRRD_DIM_MAX]);
 NRRDIO_EXPORT unsigned int nrrdRangeAxesGet(const Nrrd *nrrd,
-                                          unsigned int axisIdx[NRRD_DIM_MAX]);
-NRRDIO_EXPORT unsigned int nrrdSpatialAxesGet(const Nrrd *nrrd,
                                             unsigned int axisIdx[NRRD_DIM_MAX]);
+NRRDIO_EXPORT unsigned int nrrdSpatialAxesGet(const Nrrd *nrrd,
+                                              unsigned int axisIdx[NRRD_DIM_MAX]);
 NRRDIO_EXPORT unsigned int nrrdNonSpatialAxesGet(const Nrrd *nrrd,
-                                               unsigned int axisIdx[NRRD_DIM_MAX]);
-NRRDIO_EXPORT int nrrdSpacingCalculate(const Nrrd *nrrd, unsigned int ax, double *spacing,
-                                     double vector[NRRD_SPACE_DIM_MAX]);
+                                                 unsigned int axisIdx[NRRD_DIM_MAX]);
+NRRDIO_EXPORT int nrrdSpacingCalculate(const Nrrd *nrrd, unsigned int ax,
+                                       double *spacing,
+                                       double vector[NRRD_SPACE_DIM_MAX]);
 NRRDIO_EXPORT int nrrdOrientationReduce(Nrrd *nout, const Nrrd *nin,
-                                      int setMinsFromOrigin);
+                                        int setMinsFromOrigin);
 
 /******** simple things */
 /* simple.c */
@@ -1965,13 +1946,13 @@ NRRDIO_EXPORT unsigned int nrrdSpaceDimension(int space);
 NRRDIO_EXPORT int nrrdSpaceSet(Nrrd *nrrd, int space);
 NRRDIO_EXPORT int nrrdSpaceDimensionSet(Nrrd *nrrd, unsigned int spaceDim);
 NRRDIO_EXPORT unsigned int nrrdSpaceOriginGet(const Nrrd *nrrd,
-                                            double vector[NRRD_SPACE_DIM_MAX]);
+                                              double vector[NRRD_SPACE_DIM_MAX]);
 NRRDIO_EXPORT int nrrdSpaceOriginSet(Nrrd *nrrd, const double *vector);
 NRRDIO_EXPORT int nrrdOriginCalculate(const Nrrd *nrrd, unsigned int *axisIdx,
-                                    unsigned int axisIdxNum, int defaultCenter,
-                                    double *origin);
+                                      unsigned int axisIdxNum, int defaultCenter,
+                                      double *origin);
 NRRDIO_EXPORT int nrrdContentSet_va(Nrrd *nout, const char *func, const Nrrd *nin,
-                                  const char *format, ... /* printf-style arg list */);
+                                    const char *format, ... /* printf-style arg list */);
 NRRDIO_EXPORT void nrrdDescribe(FILE *file, const Nrrd *nrrd);
 NRRDIO_EXPORT int nrrdCheck(const Nrrd *nrrd);
 NRRDIO_EXPORT int _nrrdCheck(const Nrrd *nrrd, int checkData, int useBiff);
@@ -1980,19 +1961,19 @@ NRRDIO_EXPORT size_t nrrdElementNumber(const Nrrd *nrrd);
 NRRDIO_EXPORT int nrrdSanity(void);
 NRRDIO_EXPORT int nrrdSameSize(const Nrrd *n1, const Nrrd *n2, int useBiff);
 NRRDIO_EXPORT void nrrdSpaceVecCopy(double dst[NRRD_SPACE_DIM_MAX],
-                                  const double src[NRRD_SPACE_DIM_MAX]);
+                                    const double src[NRRD_SPACE_DIM_MAX]);
 NRRDIO_EXPORT void nrrdSpaceVecScaleAdd2(double sum[NRRD_SPACE_DIM_MAX],
-                                       double sclA,
-                                       const double vecA[NRRD_SPACE_DIM_MAX],
-                                       double sclB,
-                                       const double vecB[NRRD_SPACE_DIM_MAX]);
+                                         double sclA,
+                                         const double vecA[NRRD_SPACE_DIM_MAX],
+                                         double sclB,
+                                         const double vecB[NRRD_SPACE_DIM_MAX]);
 NRRDIO_EXPORT void nrrdSpaceVecScale(double out[NRRD_SPACE_DIM_MAX],
-                                   double scl,
-                                   const double vec[NRRD_SPACE_DIM_MAX]);
+                                     double scl,
+                                     const double vec[NRRD_SPACE_DIM_MAX]);
 NRRDIO_EXPORT double nrrdSpaceVecNorm(unsigned int sdim,
-                                    const double vec[NRRD_SPACE_DIM_MAX]);
+                                      const double vec[NRRD_SPACE_DIM_MAX]);
 NRRDIO_EXPORT int nrrdSpaceVecExists(unsigned int sdim,
-                                   const double vec[NRRD_SPACE_DIM_MAX]);
+                                     const double vec[NRRD_SPACE_DIM_MAX]);
 NRRDIO_EXPORT void nrrdSpaceVecSetNaN(double vec[NRRD_SPACE_DIM_MAX]);
 
 /******** comments related */
@@ -2007,7 +1988,7 @@ NRRDIO_EXPORT unsigned int nrrdKeyValueSize(const Nrrd *nrrd);
 NRRDIO_EXPORT int nrrdKeyValueAdd(Nrrd *nrrd, const char *key, const char *value);
 NRRDIO_EXPORT char *nrrdKeyValueGet(const Nrrd *nrrd, const char *key);
 NRRDIO_EXPORT void nrrdKeyValueIndex(const Nrrd *nrrd, char **keyP, char **valueP,
-                                   unsigned int ki);
+                                     unsigned int ki);
 NRRDIO_EXPORT int nrrdKeyValueErase(Nrrd *nrrd, const char *key);
 NRRDIO_EXPORT void nrrdKeyValueClear(Nrrd *nrrd);
 NRRDIO_EXPORT int nrrdKeyValueCopy(Nrrd *nout, const Nrrd *nin);
@@ -2044,15 +2025,15 @@ NRRDIO_EXPORT const NrrdEncoding *const nrrdEncodingArray[NRRD_ENCODING_TYPE_MAX
    parsing a "data file: " field which identifies a LIST must then
    read in all the data filenames from the same file */
 NRRDIO_EXPORT int (*const nrrdFieldInfoParse[NRRD_FIELD_MAX + 1])(FILE *file, Nrrd *nrrd,
-                                                                NrrdIoState *nio,
-                                                                int useBiff);
+                                                                  NrrdIoState *nio,
+                                                                  int useBiff);
 NRRDIO_EXPORT unsigned int _nrrdDataFNNumber(NrrdIoState *nio);
 NRRDIO_EXPORT int nrrdContainsPercentThisAndMore(const char *str, char thss);
 NRRDIO_EXPORT int _nrrdDataFNCheck(NrrdIoState *nio, Nrrd *nrrd, int useBiff);
 NRRDIO_EXPORT size_t (*const nrrdStringValsParse[NRRD_TYPE_MAX + 1])(void *out,
-                                                                   const char *s,
-                                                                   const char *sep,
-                                                                   size_t n);
+                                                                     const char *s,
+                                                                     const char *sep,
+                                                                     size_t n);
 
 /* read.c */
 NRRDIO_EXPORT int nrrdOneLine(unsigned int *lenP, NrrdIoState *nio, FILE *file);
@@ -2060,8 +2041,8 @@ NRRDIO_EXPORT int nrrdLineSkip(FILE *dataFile, NrrdIoState *nio);
 NRRDIO_EXPORT int nrrdByteSkip(FILE *dataFile, Nrrd *nrrd, NrrdIoState *nio);
 NRRDIO_EXPORT int nrrdLoad(Nrrd *nrrd, const char *filename, NrrdIoState *nio);
 NRRDIO_EXPORT int nrrdLoadMulti(Nrrd *const *nin, unsigned int ninLen,
-                              const char *fnameFormat, unsigned int numStart,
-                              NrrdIoState *nio);
+                                const char *fnameFormat, unsigned int numStart,
+                                NrrdIoState *nio);
 NRRDIO_EXPORT int nrrdRead(Nrrd *nrrd, FILE *file, NrrdIoState *nio);
 NRRDIO_EXPORT int nrrdStringRead(Nrrd *nrrd, const char *string, NrrdIoState *nio);
 
@@ -2074,8 +2055,8 @@ NRRDIO_EXPORT const NrrdEncoding *nrrdIoStateEncodingGet(NrrdIoState *nio);
 NRRDIO_EXPORT const NrrdFormat *nrrdIoStateFormatGet(NrrdIoState *nio);
 NRRDIO_EXPORT int nrrdSave(const char *filename, const Nrrd *nrrd, NrrdIoState *nio);
 NRRDIO_EXPORT int nrrdSaveMulti(const char *fnameFormat, const Nrrd *const *nin,
-                              unsigned int ninLen, unsigned int numStart,
-                              NrrdIoState *nio);
+                                unsigned int ninLen, unsigned int numStart,
+                                NrrdIoState *nio);
 NRRDIO_EXPORT int nrrdWrite(FILE *file, const Nrrd *nrrd, NrrdIoState *nio);
 NRRDIO_EXPORT int nrrdStringWrite(char **stringP, const Nrrd *nrrd, NrrdIoState *nio);
 
@@ -2090,27 +2071,28 @@ NRRDIO_EXPORT double (*const nrrdDStore[NRRD_TYPE_MAX + 1])(void *v, double d);
 NRRDIO_EXPORT float (*const nrrdFStore[NRRD_TYPE_MAX + 1])(void *v, float f);
 NRRDIO_EXPORT int (*const nrrdIStore[NRRD_TYPE_MAX + 1])(void *v, int j);
 NRRDIO_EXPORT unsigned int (*const nrrdUIStore[NRRD_TYPE_MAX + 1])(void *v,
-                                                                 unsigned int j);
+                                                                   unsigned int j);
 NRRDIO_EXPORT double (*const nrrdDLookup[NRRD_TYPE_MAX + 1])(const void *v, size_t I);
 NRRDIO_EXPORT float (*const nrrdFLookup[NRRD_TYPE_MAX + 1])(const void *v, size_t I);
 NRRDIO_EXPORT int (*const nrrdILookup[NRRD_TYPE_MAX + 1])(const void *v, size_t I);
 NRRDIO_EXPORT unsigned int (*const nrrdUILookup[NRRD_TYPE_MAX + 1])(const void *v,
-                                                                  size_t I);
-NRRDIO_EXPORT double (*const nrrdDInsert[NRRD_TYPE_MAX + 1])(void *v, size_t I, double d);
+                                                                    size_t I);
+NRRDIO_EXPORT double (*const nrrdDInsert[NRRD_TYPE_MAX + 1])(void *v, size_t I,
+                                                             double d);
 NRRDIO_EXPORT float (*const nrrdFInsert[NRRD_TYPE_MAX + 1])(void *v, size_t I, float f);
 NRRDIO_EXPORT int (*const nrrdIInsert[NRRD_TYPE_MAX + 1])(void *v, size_t I, int j);
 NRRDIO_EXPORT unsigned int (*const nrrdUIInsert[NRRD_TYPE_MAX + 1])(void *v, size_t I,
-                                                                  unsigned int j);
+                                                                    unsigned int j);
 NRRDIO_EXPORT int (*const nrrdSprint[NRRD_TYPE_MAX + 1])(char *, const void *);
 
 /******** permuting, shuffling, and all flavors of reshaping */
 /* reorder.c */
 NRRDIO_EXPORT int nrrdAxesInsert(Nrrd *nout, const Nrrd *nin, unsigned int ax);
 NRRDIO_EXPORT int nrrdInvertPerm(unsigned int *invp, const unsigned int *perm,
-                               unsigned int n);
+                                 unsigned int n);
 NRRDIO_EXPORT int nrrdAxesPermute(Nrrd *nout, const Nrrd *nin, const unsigned int *axes);
 NRRDIO_EXPORT int nrrdShuffle(Nrrd *nout, const Nrrd *nin, unsigned int axis,
-                            const size_t *perm);
+                              const size_t *perm);
 
 /******** sampling, slicing, cropping */
 /* subset.c */
