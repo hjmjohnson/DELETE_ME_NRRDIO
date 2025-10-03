@@ -28,8 +28,7 @@
 
 /*
 Wed Sep 14 05:55:40 EDT 2005: these are no longer used
-void
-nrrdPeripheralInit(Nrrd *nrrd) {
+void nrrdPeripheralInit(Nrrd *nrrd) {
 
   nrrdBasicInfoInit(nrrd,
                     NRRD_BASIC_INFO_DATA_BIT
@@ -42,8 +41,7 @@ nrrdPeripheralInit(Nrrd *nrrd) {
   return;
 }
 
-int
-nrrdPeripheralCopy(Nrrd *nout, const Nrrd *nin) {
+int nrrdPeripheralCopy(Nrrd *nout, const Nrrd *nin) {
 
   nrrdBasicInfoCopy(nout, nin,
                     NRRD_BASIC_INFO_DATA_BIT
@@ -108,7 +106,7 @@ nrrdIoStateInit(NrrdIoState *nio) {
   return;
 }
 
-NrrdIoState *
+NrrdIoState * /* Biff: nope */
 nrrdIoStateNew(void) {
   NrrdIoState *nio;
 
@@ -136,7 +134,7 @@ nrrdIoStateNew(void) {
   return nio;
 }
 
-NrrdIoState *
+NrrdIoState * /* Biff: nope */
 nrrdIoStateNix(NrrdIoState *nio) {
 
   nio->path = (char *)airFree(nio->path);
@@ -149,7 +147,6 @@ nrrdIoStateNix(NrrdIoState *nio) {
   airFree(nio); /* no NULL assignment, else compile warnings */
   return NULL;
 }
-
 
 /* ------------------------------------------------------------ */
 
@@ -239,7 +236,7 @@ nrrdBasicInfoInit(Nrrd *nrrd, int bitflag) {
 **
 ** the bitflag communicates which fields should *not* be copied
 */
-int
+int /* Biff: 1 */
 nrrdBasicInfoCopy(Nrrd *dest, const Nrrd *src, int bitflag) {
   static const char me[] = "nrrdBasicInfoCopy";
   unsigned int dd, ee;
@@ -365,10 +362,8 @@ nrrdInit(Nrrd *nrrd) {
 ******** nrrdNew()
 **
 ** creates and initializes a Nrrd
-**
-** this does NOT use biff
 */
-Nrrd *
+Nrrd * /* Biff: nope */
 nrrdNew(void) {
   int ii;
   Nrrd *nrrd;
@@ -422,10 +417,8 @@ nrrdNew(void) {
 ** to free the nrrd itself
 **
 ** returns NULL
-**
-** this does NOT use biff
 */
-Nrrd *
+Nrrd * /* Biff: nope */
 nrrdNix(Nrrd *nrrd) {
   int ii;
 
@@ -454,7 +447,7 @@ nrrdNix(Nrrd *nrrd) {
 ** same as what comes from nrrdNew().  This includes free()ing
 ** any comments.
 */
-Nrrd *
+Nrrd * /* Biff: nope */
 nrrdEmpty(Nrrd *nrrd) {
 
   if (nrrd) {
@@ -471,7 +464,7 @@ nrrdEmpty(Nrrd *nrrd) {
 **
 ** always returns NULL
 */
-Nrrd *
+Nrrd * /* Biff: nope */
 nrrdNuke(Nrrd *nrrd) {
 
   if (nrrd) {
@@ -483,7 +476,7 @@ nrrdNuke(Nrrd *nrrd) {
 
 /* ------------------------------------------------------------ */
 
-int
+int /* Biff: (private) maybe:3:1 */
 _nrrdSizeCheck(const size_t *size, unsigned int dim, int useBiff) {
   static const char me[] = "_nrrdSizeCheck";
   size_t num, pre;
@@ -519,7 +512,7 @@ _nrrdSizeCheck(const size_t *size, unsigned int dim, int useBiff) {
 ** nrrdTypeBlock, in which case it is the user's responsibility to
 ** set nrrd->blockSize at some other time.
 */
-int
+int /* Biff: 1 */
 nrrdWrap_nva(Nrrd *nrrd, void *data, int type, unsigned int dim, const size_t *size) {
   static const char me[] = "nrrdWrap_nva";
 
@@ -550,7 +543,7 @@ nrrdWrap_nva(Nrrd *nrrd, void *data, int type, unsigned int dim, const size_t *s
 ** If successful, returns 0, otherwise, 1.
 ** This does use biff.
 */
-int
+int /* Biff: 1 */
 nrrdWrap_va(Nrrd *nrrd, void *data, int type, unsigned int dim, ...) {
   static const char me[] = "nrrdWrap_va";
   va_list ap;
@@ -587,7 +580,7 @@ _nrrdTraverse(Nrrd *nrrd) {
 }
 */
 
-int
+int /* Biff: (private) 1 */
 _nrrdCopy(Nrrd *nout, const Nrrd *nin, int bitflag) {
   static const char me[] = "_nrrdCopy";
   size_t size[NRRD_DIM_MAX];
@@ -641,7 +634,7 @@ _nrrdCopy(Nrrd *nout, const Nrrd *nin, int bitflag) {
 ** Comments from old are added to comments for new, so these are also
 ** newly allocated.  nout->ptr is not set, nin->ptr is not read.
 */
-int
+int /* Biff: 1 */
 nrrdCopy(Nrrd *nout, const Nrrd *nin) {
   static const char me[] = "nrrdCopy";
 
@@ -671,11 +664,11 @@ nrrdCopy(Nrrd *nout, const Nrrd *nin) {
 **
 ** Note: This function DOES use biff
 */
-int
+int /* Biff: 1 */
 nrrdAlloc_nva(Nrrd *nrrd, int type, unsigned int dim, const size_t *size) {
   static const char me[] = "nrrdAlloc_nva";
   size_t num, esize;
-  char stmp[2][AIR_STRLEN_SMALL];
+  char stmp[2][AIR_STRLEN_SMALL + 1];
 
   if (!(nrrd && size)) {
     biffAddf(NRRD, "%s: got NULL pointer", me);
@@ -720,7 +713,7 @@ nrrdAlloc_nva(Nrrd *nrrd, int type, unsigned int dim, const size_t *size) {
 ** Handy wrapper around nrrdAlloc_nva, which takes, as its vararg list,
 ** all the axes sizes.
 */
-int
+int /* Biff: 1 */
 nrrdAlloc_va(Nrrd *nrrd, int type, unsigned int dim, ...) {
   static const char me[] = "nrrdAlloc_va";
   size_t size[NRRD_DIM_MAX];
@@ -752,10 +745,10 @@ nrrdAlloc_va(Nrrd *nrrd, int type, unsigned int dim, ...) {
 ** HEY: should consider making this a public function, but GLK couldn't
 ** think of a name that wasn't silly
 */
-int
+int /* Biff: (private) 1 */
 _nrrdMaybeAllocMaybeZero_nva(Nrrd *nrrd, int type, unsigned int dim, const size_t *size,
                              int zeroWhenNoAlloc) {
-  static const char me[] = "nrrdMaybeAllocMaybeZero_nva";
+  static const char me[] = "_nrrdMaybeAllocMaybeZero_nva";
   size_t sizeWant, sizeHave, numWant, elementSizeWant;
   int need;
   unsigned int ai;
@@ -774,7 +767,7 @@ _nrrdMaybeAllocMaybeZero_nva(Nrrd *nrrd, int type, unsigned int dim, const size_
       return 1;
     }
     if (!(0 < nrrd->blockSize)) {
-      char stmp[AIR_STRLEN_SMALL];
+      char stmp[AIR_STRLEN_SMALL + 1];
       biffAddf(NRRD, "%s: given nrrd->blockSize %s invalid", me,
                airSprintSize_t(stmp, nrrd->blockSize));
       return 1;
@@ -841,15 +834,15 @@ _nrrdMaybeAllocMaybeZero_nva(Nrrd *nrrd, int type, unsigned int dim, const size_
 **
 ** also subscribes to the "don't mess with peripheral information" philosophy
 */
-int
+int /* Biff: 1 */
 nrrdMaybeAlloc_nva(Nrrd *nrrd, int type, unsigned int dim, const size_t *size) {
   static const char me[] = "nrrdMaybeAlloc_nva";
-  int ret;
-  ret = _nrrdMaybeAllocMaybeZero_nva(nrrd, type, dim, size, AIR_TRUE);
-  if (ret) {
+
+  if (_nrrdMaybeAllocMaybeZero_nva(nrrd, type, dim, size, AIR_TRUE)) {
     biffAddf(NRRD, "%s: trouble", me);
+    return 1;
   }
-  return ret;
+  return 0;
 }
 
 /*
@@ -858,7 +851,7 @@ nrrdMaybeAlloc_nva(Nrrd *nrrd, int type, unsigned int dim, const size_t *size) {
 ** Handy wrapper around nrrdAlloc, which takes, as its vararg list
 ** all the axes sizes, thereby calculating the total number.
 */
-int
+int /* Biff: 1 */
 nrrdMaybeAlloc_va(Nrrd *nrrd, int type, unsigned int dim, ...) {
   static const char me[] = "nrrdMaybeAlloc_va";
   size_t size[NRRD_DIM_MAX];
@@ -880,4 +873,3 @@ nrrdMaybeAlloc_va(Nrrd *nrrd, int type, unsigned int dim, ...) {
   }
   return 0;
 }
-

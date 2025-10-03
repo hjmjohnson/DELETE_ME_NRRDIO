@@ -92,7 +92,7 @@ _nrrdFormatTypeValEqv[] = {
   nrrdFormatTypeEPS,
 };
 
-airEnum
+static const airEnum
 _nrrdFormatType = {
   "format",
   NRRD_FORMAT_TYPE_MAX,
@@ -183,7 +183,7 @@ _nrrdTypeValEqv[] = {
   ntBL,
 };
 
-airEnum
+static const airEnum
 _nrrdType = {
   "type",
   NRRD_TYPE_MAX,
@@ -240,7 +240,7 @@ _nrrdEncodingTypeValEqv[] = {
   nrrdEncodingTypeZRL
 };
 
-airEnum
+static const airEnum
 _nrrdEncodingType = {
   "encoding",
   NRRD_ENCODING_TYPE_MAX,

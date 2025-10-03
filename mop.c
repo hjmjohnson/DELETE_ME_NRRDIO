@@ -61,7 +61,7 @@ airMopSub() and airMopUnMem were created
 #define AIR_MOP_INCR 10
 
 airArray *
-airMopNew() {
+airMopNew(void) {
 
   return airArrayNew(NULL, NULL, sizeof(airMop), AIR_MOP_INCR);
 }
@@ -254,7 +254,7 @@ airMopDebug(airArray *arr) {
   printf("airMopDebug: ^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 }
 
-void
+airArray *
 airMopDone(airArray *arr, int error) {
   airMop *mops;
   unsigned int ii;
@@ -281,18 +281,17 @@ airMopDone(airArray *arr, int error) {
       printf("airMopDone(%p): done!\n", (void*)arr);
     */
   }
-  return;
+  return NULL;
 }
 
-void
+airArray *
 airMopError(airArray *arr) {
 
-  airMopDone(arr, AIR_TRUE);
+  return airMopDone(arr, AIR_TRUE);
 }
 
-void
+airArray *
 airMopOkay(airArray *arr) {
 
-  airMopDone(arr, AIR_FALSE);
+  return airMopDone(arr, AIR_FALSE);
 }
-

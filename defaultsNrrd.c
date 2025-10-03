@@ -67,15 +67,15 @@ int nrrdStateKeyValueReturnInternalPointers = AIR_FALSE;
 int nrrdStateKindNoop = AIR_FALSE;
 
 /* these are helper functions for min/max testing */
-airLLong
+airLLong /* Biff: (private) nope */
 _nrrdLLongMaxHelp(airLLong val) {
   return val * 2 + 1;
 }
-airLLong
+airLLong /* Biff: (private) nope */
 _nrrdLLongMinHelp(airLLong val) {
   return val * 2;
 }
-airULLong
+airULLong /* Biff: (private) nope */
 _nrrdULLongMaxHelp(airULLong val) {
   return val + 1;
 }
@@ -85,4 +85,3 @@ _nrrdULLongMaxHelp(airULLong val) {
 
 /* Are there other assumptions currently built into nrrd which could
    stand to be user-controllable? */
-

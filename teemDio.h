@@ -22,20 +22,3 @@
 
   3. This notice may not be removed or altered from any source distribution.
 */
-
-
-/*
-** the end result of this is that the source file which includes
-** this can be sure that TEEM_DIO is set, and can be sure that
-** it is set to either 0 or 1
-*/
-
-#ifndef TEEM_DIO
-#  error TEEM_DIO not defined
-#elif TEEM_DIO == 1
-#  /* okay, its 1 */
-#elif TEEM_DIO == 0
-#  /* okay, its 0 */
-#else
-#  error TEEM_DIO not set to 1 or 0
-#endif

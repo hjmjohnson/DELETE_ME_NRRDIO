@@ -52,7 +52,7 @@ _nrrdEncodingUnknown_available(void) {
   return AIR_FALSE;
 }
 
-static int
+static int /* Biff: 1 */
 _nrrdEncodingUnknown_read(FILE *file, void *data, size_t elementNum, Nrrd *nrrd,
                           struct NrrdIoState_t *nio) {
   static const char me[] = "_nrrdEncodingUnknown_read";
@@ -68,7 +68,7 @@ _nrrdEncodingUnknown_read(FILE *file, void *data, size_t elementNum, Nrrd *nrrd,
   return 1;
 }
 
-static int
+static int /* Biff: 1 */
 _nrrdEncodingUnknown_write(FILE *file, const void *data, size_t elementNum,
                            const Nrrd *nrrd, struct NrrdIoState_t *nio) {
   static const char me[] = "_nrrdEncodingUnknown_write";
@@ -84,13 +84,13 @@ _nrrdEncodingUnknown_write(FILE *file, const void *data, size_t elementNum,
   return 1;
 }
 
-const NrrdEncoding _nrrdEncodingUnknown = {"unknown", /* name */
-                                           "unknown", /* suffix */
-                                           AIR_FALSE, /* endianMatters */
-                                           AIR_FALSE, /* isCompression */
-                                           _nrrdEncodingUnknown_available,
-                                           _nrrdEncodingUnknown_read,
-                                           _nrrdEncodingUnknown_write};
+static const NrrdEncoding _nrrdEncodingUnknown = {"unknown", /* name */
+                                                  "unknown", /* suffix */
+                                                  AIR_FALSE, /* endianMatters */
+                                                  AIR_FALSE, /* isCompression */
+                                                  _nrrdEncodingUnknown_available,
+                                                  _nrrdEncodingUnknown_read,
+                                                  _nrrdEncodingUnknown_write};
 
 const NrrdEncoding *const nrrdEncodingUnknown = &_nrrdEncodingUnknown;
 

@@ -30,7 +30,7 @@
 const int blah[] array in an object file if it hasn't been declared
 as "extern" */
 
-const char nrrdTypePrintfStr[NRRD_TYPE_MAX + 1][AIR_STRLEN_SMALL] = {
+const char nrrdTypePrintfStr[NRRD_TYPE_MAX + 1][AIR_STRLEN_SMALL + 1] = {
   "%*d",          /* nrrdTypeUnknown: what else?  the effect will be
                     "skip" for sscanf, and "minimum precision" for printf */
   "%d",           /* nrrdTypeChar: char */
@@ -76,7 +76,11 @@ const int nrrdTypeIsIntegral[NRRD_TYPE_MAX + 1] = {
   1, /* nrrdTypeULLong: unsigned long long */
   0, /* nrrdTypeFloat: float */
   0, /* nrrdTypeDouble: double */
-  1  /* nrrdTypeBlock: for some reason we pretend that blocks are integers */
+  0  /* nrrdTypeBlock: "for some reason we pretend that blocks are integers" is what this
+     used to say since ~2002 when this array was created (under the name nrrdTypeFixed[],
+     as opposed to floating point), but that was never justified or necessary (afaik).
+     For 2023 TeemV2 hacking, GLK got annoyed that CC code in cc.c didn't immediately
+     complain that nrrdTypeBloack was a useless type for output CC IDs. */
 };
 
 const int nrrdTypeIsUnsigned[NRRD_TYPE_MAX + 1] = {
@@ -91,7 +95,10 @@ const int nrrdTypeIsUnsigned[NRRD_TYPE_MAX + 1] = {
   1, /* nrrdTypeULLong: unsigned long long */
   0, /* nrrdTypeFloat: float */
   0, /* nrrdTypeDouble: double */
-  0  /* nrrdTypeBlock: for some reason we pretend that blocks are signed */
+  0  /* nrrdTypeBlock: "for some reason we pretend that blocks are signed" See note about
+  nrrdTypeIsIntegral[nrrdTypeBlock] above. While the value of
+  nrrdTypeIsUnsigned[nrrdTypeBlock] has not changed; we don't pretend that nrrdTypeBlock
+  is any kind of number. */
 };
 
 /*
@@ -238,8 +245,8 @@ const int _nrrdFieldValidInText[NRRD_FIELD_MAX + 1] = {
         float in text), so this should not be disruptive. */
   0, /* nrrdField_block_size */
   1, /* nrrdField_dimension: but can only be 1 or 2 */
-  0, /* nrrdField_space */
-  0, /* nrrdField_space_dimension */
+  1, /* nrrdField_space */
+  1, /* nrrdField_space_dimension */
   0, /* nrrdField_sizes */
   1, /* nrrdField_spacings */
   1, /* nrrdField_thicknesses */
@@ -260,8 +267,12 @@ const int _nrrdFieldValidInText[NRRD_FIELD_MAX + 1] = {
   0, /* nrrdField_byte_skip */
   1, /* nrrdField_keyvalue */
   0, /* nrrdField_sample_units */
-  0, /* nrrdField_space_units */
-  0, /* nrrdField_space_origin */
+  1, /* nrrdField_space_units */
+  1, /* nrrdField_space_origin: with revision 2368, which was part of adding new "space"
+        orientation meta-data, nrrdField_space_directions WERE said to be valid in text
+        (above in this array), but not space, space dimension, space units, or space
+        origin; this was probably a bug. Now that nio->bareText can be false, these
+        should all be allowed in text files. */
   0, /* nrrdField_measurement_frame */
   0  /* nrrdField_data_file */
 };

@@ -146,10 +146,10 @@ On output:
 #define MAGIC5 "NRRD0005"
 #define MAGIC6 "NRRD0006"
 
-const char *_nrrdFormatURLLine0 = "Complete NRRD file format specification at:";
-const char *_nrrdFormatURLLine1 = "http://teem.sourceforge.net/nrrd/format.html";
+const char *const _nrrdFormatURLLine0 = "Complete NRRD file format specification at:";
+const char *const _nrrdFormatURLLine1 = "http://teem.sourceforge.net/nrrd/format.html";
 
-void
+static void
 nrrdIoStateDataFileIterBegin(NrrdIoState *nio) {
 
   nio->dataFNIndex = 0;
@@ -173,7 +173,7 @@ nrrdIoStateDataFileIterBegin(NrrdIoState *nio) {
 **
 ** NOTE: this should work okay with nio->headerStringRead, I think ...
 */
-int
+static int /* Biff: 1 */
 nrrdIoStateDataFileIterNext(FILE **fileP, NrrdIoState *nio, int reading) {
   static const char me[] = "nrrdIoStateDataFileIterNext";
   char *fname = NULL;
@@ -296,7 +296,7 @@ nrrdIoStateDataFileIterNext(FILE **fileP, NrrdIoState *nio, int reading) {
 ** function will determine which NRRD00XX magic gets used for the
 ** output file
 */
-int
+int /* Biff: (private) nope */
 _nrrdFormatNRRD_whichVersion(const Nrrd *nrrd, NrrdIoState *nio) {
   int ret;
 
@@ -333,7 +333,7 @@ _nrrdFormatNRRD_nameLooksLike(const char *filename) {
   return (airEndsWith(filename, NRRD_EXT_NRRD) || airEndsWith(filename, NRRD_EXT_NHDR));
 }
 
-static int
+static int /* Biff: maybe:3:AIR_FALSE */
 _nrrdFormatNRRD_fitsInto(const Nrrd *nrrd, const NrrdEncoding *encoding, int useBiff) {
   static const char me[] = "_nrrdFormatNRRD_fitsInto";
 
@@ -368,7 +368,7 @@ _nrrdFormatNRRD_contentStartsLike(NrrdIoState *nio) {
 ** nrrdCheck(), because it includes I/O-specific stuff
 **
 */
-int
+int /* Biff: (private) 1 */
 _nrrdHeaderCheck(Nrrd *nrrd, NrrdIoState *nio, int checkSeen) {
   static const char me[] = "_nrrdHeaderCheck";
   int i;
@@ -420,7 +420,7 @@ _nrrdHeaderCheck(Nrrd *nrrd, NrrdIoState *nio, int checkSeen) {
 ** NOTE: by giving a NULL "file", you can make this function basically
 ** do the work of reading in datafiles, without any header parsing
 */
-static int
+static int /* Biff: 1 */
 _nrrdFormatNRRD_read(FILE *file, Nrrd *nrrd, NrrdIoState *nio) {
   static const char me[] = "_nrrdFormatNRRD_read";
   /* Dynamically allocated for space reasons. */
@@ -446,7 +446,7 @@ _nrrdFormatNRRD_read(FILE *file, Nrrd *nrrd, NrrdIoState *nio) {
     /* parse all the header lines */
     do {
       nio->pos = 0;
-      if (_nrrdOneLine(&llen, nio, file)) {
+      if (nrrdOneLine(&llen, nio, file)) {
         biffAddf(NRRD, "%s: trouble getting line of header", me);
         return 1;
       }
@@ -503,7 +503,7 @@ _nrrdFormatNRRD_read(FILE *file, Nrrd *nrrd, NrrdIoState *nio) {
     nrrd->data = NULL;
     data = NULL;
   } else {
-    if (_nrrdCalloc(nrrd, nio, dataFile)) {
+    if (_nrrdCalloc(nrrd, nio)) {
       biffAddf(NRRD, "%s: couldn't allocate memory for data", me);
       return 1;
     }
@@ -600,10 +600,10 @@ _nrrdFormatNRRD_read(FILE *file, Nrrd *nrrd, NrrdIoState *nio) {
   return 0;
 }
 
-static int
+static int /* Biff: 1 */
 _nrrdFormatNRRD_write(FILE *file, const Nrrd *nrrd, NrrdIoState *nio) {
   static const char me[] = "_nrrdFormatNRRD_write";
-  char strbuf[AIR_STRLEN_MED], *strptr, *tmp;
+  char strbuf[AIR_STRLEN_MED + 1], *strptr, *tmp;
   int ii;
   unsigned int jj;
   airArray *mop;
@@ -817,7 +817,6 @@ _nrrdFormatNRRD_write(FILE *file, const Nrrd *nrrd, NrrdIoState *nio) {
 const NrrdFormat _nrrdFormatNRRD = {"NRRD",
                                     AIR_FALSE, /* isImage */
                                     AIR_TRUE,  /* readable */
-                                    AIR_TRUE,  /* usesDIO */
                                     _nrrdFormatNRRD_available,
                                     _nrrdFormatNRRD_nameLooksLike,
                                     _nrrdFormatNRRD_fitsInto,

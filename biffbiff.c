@@ -263,7 +263,7 @@ biffMaybeAddf(int useBiff, const char *key, const char *errfmt, ...) {
 ** be considered a glorified strdup(): it is the callers responsibility
 ** to free() this string later
 */
-char * /*Teem: allocates char* */ /* this comment is an experiment */
+char *
 biffGet(const char *key) {
   static const char me[] = "biffGet";
   char *ret;
@@ -411,7 +411,7 @@ biffMove(const char *destKey, const char *err, const char *srcKey) {
 
 static void
 _biffMoveVL(const char *destKey, const char *srcKey, const char *errfmt, va_list args) {
-  static const char me[] = "biffMovev";
+  static const char me[] = "_biffMoveVL";
   biffMsg *dest, *src;
 
   _bmsgStart();
@@ -422,6 +422,7 @@ _biffMoveVL(const char *destKey, const char *srcKey, const char *errfmt, va_list
     return;
   }
   _biffMsgMoveVL(dest, src, errfmt, args);
+  biffDone(srcKey);
   return;
 }
 

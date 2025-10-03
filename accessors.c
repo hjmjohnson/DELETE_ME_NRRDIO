@@ -79,19 +79,19 @@ MAP(LOAD_DEF, JN)
 MAP(LOAD_DEF, FL)
 MAP(LOAD_DEF, DB)
 
-unsigned int (*
+unsigned int (* const
 nrrdUILoad[NRRD_TYPE_MAX+1])(const void*) = {
   NULL, MAP(LOAD_LIST, UI) NULL
 };
-int (*
+int (* const
 nrrdILoad[NRRD_TYPE_MAX+1])(const void*) = {
   NULL, MAP(LOAD_LIST, JN) NULL
 };
-float (*
+float (* const
 nrrdFLoad[NRRD_TYPE_MAX+1])(const void*) = {
   NULL, MAP(LOAD_LIST, FL) NULL
 };
-double (*
+double (* const
 nrrdDLoad[NRRD_TYPE_MAX+1])(const void*) = {
   NULL, MAP(LOAD_LIST, DB) NULL
 };
@@ -117,19 +117,19 @@ MAP(STORE_DEF, JN)
 MAP(STORE_DEF, FL)
 MAP(STORE_DEF, DB)
 
-unsigned int (*
+unsigned int (* const
 nrrdUIStore[NRRD_TYPE_MAX+1])(void *, unsigned int) = {
   NULL, MAP(STORE_LIST, UI) NULL
 };
-int (*
+int (* const
 nrrdIStore[NRRD_TYPE_MAX+1])(void *, int) = {
   NULL, MAP(STORE_LIST, JN) NULL
 };
-float (*
+float (* const
 nrrdFStore[NRRD_TYPE_MAX+1])(void *, float) = {
   NULL, MAP(STORE_LIST, FL) NULL
 };
-double (*
+double (* const
 nrrdDStore[NRRD_TYPE_MAX+1])(void *, double) = {
   NULL, MAP(STORE_LIST, DB) NULL
 };
@@ -153,19 +153,19 @@ MAP(LOOKUP_DEF, JN)
 MAP(LOOKUP_DEF, FL)
 MAP(LOOKUP_DEF, DB)
 
-unsigned int (*
+unsigned int (* const
 nrrdUILookup[NRRD_TYPE_MAX+1])(const void *, size_t) = {
   NULL, MAP(LOOKUP_LIST, UI) NULL
 };
-int (*
+int (* const
 nrrdILookup[NRRD_TYPE_MAX+1])(const void *, size_t) = {
   NULL, MAP(LOOKUP_LIST, JN) NULL
 };
-float (*
+float (* const
 nrrdFLookup[NRRD_TYPE_MAX+1])(const void *, size_t) = {
   NULL, MAP(LOOKUP_LIST, FL) NULL
 };
-double (*
+double (* const
 nrrdDLookup[NRRD_TYPE_MAX+1])(const void *, size_t) = {
   NULL, MAP(LOOKUP_LIST, DB) NULL
 };
@@ -191,19 +191,19 @@ MAP(INSERT_DEF, JN)
 MAP(INSERT_DEF, FL)
 MAP(INSERT_DEF, DB)
 
-unsigned int (*
+unsigned int (* const
 nrrdUIInsert[NRRD_TYPE_MAX+1])(void *, size_t, unsigned int) = {
   NULL, MAP(INSERT_LIST, UI) NULL
 };
-int (*
+int (* const
 nrrdIInsert[NRRD_TYPE_MAX+1])(void *, size_t, int) = {
   NULL, MAP(INSERT_LIST, JN) NULL
 };
-float (*
+float (* const
 nrrdFInsert[NRRD_TYPE_MAX+1])(void *, size_t, float) = {
   NULL, MAP(INSERT_LIST, FL) NULL
 };
-double (*
+double (* const
 nrrdDInsert[NRRD_TYPE_MAX+1])(void *, size_t, double) = {
   NULL, MAP(INSERT_LIST, DB) NULL
 };
@@ -234,7 +234,7 @@ static int _nrrdSprintFL(char *s, const FL *v) {
   return airSinglePrintf(NULL, s, "%.9g", (double)(*v)); }
 static int _nrrdSprintDB(char *s, const DB *v) {
   return airSinglePrintf(NULL, s, "%.17g", *v); }
-int (*
+int (* const
 nrrdSprint[NRRD_TYPE_MAX+1])(char *, const void *) = {
   NULL,
   (int (*)(char *, const void *))_nrrdSprintCH,

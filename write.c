@@ -26,12 +26,7 @@
 #include "NrrdIO.h"
 #include "privateNrrd.h"
 
-/*
-  #include <sys/types.h>
-  #include <unistd.h>
-*/
-
-int
+int /* Biff: 1 */
 nrrdIoStateSet(NrrdIoState *nio, int parm, int value) {
   static const char me[] = "nrrdIoStateSet";
 
@@ -104,7 +99,7 @@ nrrdIoStateSet(NrrdIoState *nio, int parm, int value) {
   return 0;
 }
 
-int
+int /* Biff: 1 */
 nrrdIoStateEncodingSet(NrrdIoState *nio, const NrrdEncoding *encoding) {
   static const char me[] = "nrrdIoStateEncodingSet";
 
@@ -124,7 +119,7 @@ nrrdIoStateEncodingSet(NrrdIoState *nio, const NrrdEncoding *encoding) {
   return 0;
 }
 
-int
+int /* Biff: 1 */
 nrrdIoStateFormatSet(NrrdIoState *nio, const NrrdFormat *format) {
   static const char me[] = "nrrdIoStateFormatSet";
 
@@ -147,7 +142,7 @@ nrrdIoStateFormatSet(NrrdIoState *nio, const NrrdFormat *format) {
 /*
 ** no biff
 */
-int
+int /* Biff: nope */
 nrrdIoStateGet(NrrdIoState *nio, int parm) {
   static const char me[] = "nrrdIoStateGet";
   int value;
@@ -172,11 +167,11 @@ nrrdIoStateGet(NrrdIoState *nio, int parm) {
     break;
   case nrrdIoStateCharsPerLine:
     /* HEY: this cast is a bad because nio->charsPerLine is unsigned */
-    value = AIR_CAST(int, nio->charsPerLine);
+    value = AIR_INT(nio->charsPerLine);
     break;
   case nrrdIoStateValsPerLine:
     /* HEY: this cast is a bad because nio->valsPerLine is unsigned */
-    value = AIR_CAST(int, nio->valsPerLine);
+    value = AIR_INT(nio->valsPerLine);
     break;
   case nrrdIoStateSkipData:
     value = !!nio->skipData;
@@ -203,7 +198,7 @@ nrrdIoStateGet(NrrdIoState *nio, int parm) {
 /*
 ** no biff
 */
-const NrrdEncoding *
+const NrrdEncoding * /* Biff: nope */
 nrrdIoStateEncodingGet(NrrdIoState *nio) {
 
   return nio ? nio->encoding : nrrdEncodingUnknown;
@@ -212,16 +207,16 @@ nrrdIoStateEncodingGet(NrrdIoState *nio) {
 /*
 ** no biff
 */
-const NrrdFormat *
+const NrrdFormat * /* Biff: nope */
 nrrdIoStateFormatGet(NrrdIoState *nio) {
 
   return nio ? nio->format : nrrdFormatUnknown;
 }
 
-void
+static void
 _nrrdStrcatSpaceVector(char *str, unsigned int spaceDim,
                        const double val[NRRD_SPACE_DIM_MAX]) {
-  char buff[AIR_STRLEN_MED]; /* bad Gordon */
+  char buff[AIR_STRLEN_MED + 1]; /* bad Gordon */
   unsigned int dd;
 
   if (AIR_EXISTS(val[0])) {
@@ -239,7 +234,7 @@ _nrrdStrcatSpaceVector(char *str, unsigned int spaceDim,
   return;
 }
 
-int
+int /* Biff: (private) nope */
 _nrrdFieldInteresting(const Nrrd *nrrd, NrrdIoState *nio, int field) {
   int ret;
   unsigned int ai;
@@ -405,7 +400,7 @@ void
 _nrrdSprintFieldInfo(char **strP, const char *prefix, const Nrrd *nrrd, NrrdIoState *nio,
                      int field, int dropAxis0) {
   static const char me[] = "_nrrdSprintFieldInfo";
-  char buff[AIR_STRLEN_MED], *fnb, stmp[AIR_STRLEN_SMALL], *strtmp = NULL;
+  char buff[AIR_STRLEN_MED + 1], *fnb, stmp[AIR_STRLEN_SMALL + 1], *strtmp = NULL;
   double colvec[NRRD_SPACE_DIM_MAX];
   const char *fs;
   unsigned int ii, dd, uintStrlen = 11, size_tStrlen = 33, doubleStrlen = 513;
@@ -751,7 +746,7 @@ _nrrdFprintFieldInfo(FILE *file, const char *prefix, const Nrrd *nrrd, NrrdIoSta
   return;
 }
 
-int
+static int /* Biff: 1 */
 _nrrdEncodingMaybeSet(NrrdIoState *nio) {
   static const char me[] = "_nrrdEncodingMaybeSet";
 
@@ -780,10 +775,10 @@ _nrrdEncodingMaybeSet(NrrdIoState *nio) {
 **
 ** we must set nio->format to something useful/non-trivial
 */
-int
+static int /* Biff: 1 */
 _nrrdFormatMaybeGuess(const Nrrd *nrrd, NrrdIoState *nio, const char *filename) {
   static const char me[] = "_nrrdFormatMaybeGuess";
-  char mesg[AIR_STRLEN_MED];
+  char mesg[AIR_STRLEN_MED + 1];
   int fi, guessed, available, fits;
 
   if (!nio->format) {
@@ -826,7 +821,7 @@ _nrrdFormatMaybeGuess(const Nrrd *nrrd, NrrdIoState *nio, const char *filename) 
   return 0;
 }
 
-int
+static int /* Biff: 1 */
 _nrrdFormatMaybeSet(NrrdIoState *nio) {
   static const char me[] = "_nrrdFormatMaybeSet";
 
@@ -854,7 +849,7 @@ _nrrdFormatMaybeSet(NrrdIoState *nio) {
 ** called, all writing parameters must be given explicitly, and their
 ** appropriateness is explicitly tested
 */
-int
+static int /* Biff: 1 */
 _nrrdWrite(FILE *file, char **stringP, const Nrrd *nrrd, NrrdIoState *_nio) {
   static const char me[] = "_nrrdWrite";
   NrrdIoState *nio;
@@ -944,7 +939,7 @@ _nrrdWrite(FILE *file, char **stringP, const Nrrd *nrrd, NrrdIoState *_nio) {
 **
 ** wrapper around _nrrdWrite; writes to a FILE*
 */
-int
+int /* Biff: 1 */
 nrrdWrite(FILE *file, const Nrrd *nrrd, NrrdIoState *_nio) {
   static const char me[] = "nrrdWrite";
 
@@ -960,7 +955,7 @@ nrrdWrite(FILE *file, const Nrrd *nrrd, NrrdIoState *_nio) {
 **
 ** wrapper around _nrrdWrite; *allocates* and writes to a string
 */
-int
+int /* Biff: 1 */
 nrrdStringWrite(char **stringP, const Nrrd *nrrd, NrrdIoState *_nio) {
   static const char me[] = "nrrdStringWrite";
 
@@ -981,7 +976,7 @@ nrrdStringWrite(char **stringP, const Nrrd *nrrd, NrrdIoState *_nio) {
 ** whenever the filename ends in NRRD_EXT_NHDR, and when we play this
 ** game, the data file is ALWAYS header relative.
 */
-int
+int /* Biff: 1 */
 nrrdSave(const char *filename, const Nrrd *nrrd, NrrdIoState *nio) {
   static const char me[] = "nrrdSave";
   FILE *file;
@@ -1034,7 +1029,7 @@ nrrdSave(const char *filename, const Nrrd *nrrd, NrrdIoState *nio) {
   return 0;
 }
 
-int
+int /* Biff: 1 */
 nrrdSaveMulti(const char *fnameFormat, const Nrrd *const *nin, unsigned int ninLen,
               unsigned int numStart, NrrdIoState *nio) {
   static const char me[] = "nrrdSaveMulti";
@@ -1046,7 +1041,7 @@ nrrdSaveMulti(const char *fnameFormat, const Nrrd *const *nin, unsigned int ninL
     biffAddf(NRRD, "%s: got NULL pointer", me);
     return 1;
   }
-  if (!(_nrrdContainsPercentThisAndMore(fnameFormat, 'u'))) {
+  if (!(nrrdContainsPercentThisAndMore(fnameFormat, 'u'))) {
     biffAddf(NRRD,
              "%s: given format \"%s\" doesn't seem to "
              "have the \"%%u\" conversion specification to sprintf "
