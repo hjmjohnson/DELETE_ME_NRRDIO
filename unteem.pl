@@ -54,7 +54,7 @@ while (<>) {
         s|\/\* NrrdIO-hack-001 \*\/||g;
     }
     s|.* \/\* NrrdIO-hack-002 \*\/|#if 1|g;
-    s|.* \/\* NrrdIO-hack-003 \*\/|int nrrdStateVerboseIO = 0;|g;
+    s|.* \/\* NrrdIO-hack-003 \*\/|int nrrdDefaultVerboseIO = 0;|g;
     if ($ITK) {
         s|.* \/\* NrrdIO-hack-004 \*\/|#include "itk_zlib.h"|g;
     } else {
