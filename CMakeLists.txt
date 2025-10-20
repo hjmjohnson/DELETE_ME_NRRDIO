@@ -35,7 +35,7 @@ INCLUDE_REGULAR_EXPRESSION("^.*.h$")
 #
 
 SET(nrrdio_SRCS comment.c enumsNrrd.c mop.c string.c 754.c defaultsNrrd.c
-parseAir.c dio.c format.c parseNrrd.c formatEPS.c encoding.c
+parseAir.c format.c parseNrrd.c formatEPS.c encoding.c
 formatNRRD.c encodingAscii.c formatPNG.c encodingBzip2.c
 formatPNM.c accessors.c encodingGzip.c formatText.c
 array.c encodingHex.c formatVTK.c read.c arraysNrrd.c encodingRaw.c
@@ -47,22 +47,9 @@ miscAir.c simple.c )
 # used on windows builds.
 ADD_DEFINITIONS(-DTEEM_BUILD=1)
 
-#The QNANHIBIT variable is configured by the root level CMakeLists.txt
-IF(QNANHIBIT)
-  ADD_DEFINITIONS(-DTEEM_QNANHIBIT=1)
-ELSE(QNANHIBIT)
-  ADD_DEFINITIONS(-DTEEM_QNANHIBIT=0)
-ENDIF(QNANHIBIT)
+# (TeemV2: TEEM_QNANHIBIT is gone)
 
-#DirectIO is the fast way to do multi-gigabyte I/O and currently only available
-#for SGI platforms.  Use of DirectIO is enabled manually for now.
-#OPTION(USE_DIRECTIO "Use DirectIO for Nrrd file IO.  Only valid on SGI systems." 0)
-#MARK_AS_ADVANCED(USE_DIRECTIO)
-#IF(USE_DIRECTIO)
-#  ADD_DEFINITIONS(-DTEEM_DIO=1)
-#ELSE(USE_DIRECTIO)
-  ADD_DEFINITIONS(-DTEEM_DIO=0)
-#ENDIF(USE_DIRECTIO)
+# (TeemV2: TEEM_DIO (and dio.c) is gone)
 
 # Possibly turn on usage of zlib compression (requires linking with libz)
 # (i.e., programs compiled with ITKNrrdIO must also be compiled with zlib)
