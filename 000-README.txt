@@ -108,10 +108,6 @@ that link with both NrrdIO and the rest of Teem.
 
 preamble.c: the preamble describing the non-copyleft licensing of NrrdIO.
 
-qnanhibit.c: discover a variable which, like endianness, is architecture
-dependent and which is required for building NrrdIO (as well as Teem), but
-unlike endianness, is completely obscure and unheard of.
-
 encodingBzip2.c, formatEPS.c, formatPNG.c, formatPNM.c, formatText.c,
 formatVTK.c: These files create stubs for functionality which is fully present
 in Teem, but which has been removed from NrrdIO in the interest of simplicity.
