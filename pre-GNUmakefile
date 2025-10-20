@@ -69,16 +69,13 @@ $(error Make quitting))
 NEED_NOT = encodingBzip2.c formatEPS.c formatPNG.c formatPNM.c \
   formatText.c formatVTK.c
 
-### These are still needed for exact same functionality as in Teem
-###
-TEEM_HDRS = $(addprefix teem/, \
-  teemDio.h teemPng.h teemQnanhibit.h)
+# Gone in TeemV2: TEEM_HDRS = $(addprefix teem/, teemDio.h teemPng.h teemQnanhibit.h)
 
 ### NEED_{AIR,BIFF,NRRD}: the source files from teem that we need
 ### NEED_HDRS: the headers that we need
 ###
 NEED_AIR = $(addprefix air/, \
-  754.c mop.c array.c parseAir.c dio.c \
+  754.c mop.c array.c parseAir.c \
   sane.c endianAir.c string.c enum.c miscAir.c)
 NEED_BIFF = $(addprefix biff/, biffbiff.c biffmsg.c)
 NEED_NRRD = $(addprefix nrrd/, \
@@ -92,8 +89,7 @@ NEED_PUB_HDRS = air/air.h biff/biff.h \
   $(addprefix nrrd/, nrrdDefines.h nrrdEnums.h nrrdMacros.h nrrd.h)
 NEED_PRIV_HDRS = air/privateAir.h biff/privateBiff.h nrrd/privateNrrd.h
 
-### Building NrrdIO requires the teem*.h headers, and the processed sources
-### from air, biff, and nrrd
+### Building NrrdIO requires processed sources from air, biff, and nrrd
 ###
 .PHONY: all
 ifeq (undefined,$(origin ITK_NRRDIO))
@@ -101,7 +97,7 @@ ifeq (undefined,$(origin ITK_NRRDIO))
 else
   NRRDIO_H = NrrdIO.h.in
 endif
-all: $(TEEM_HDRS) $(NEED_SRCS) $(NEED_PRIV_HDRS) $(NRRDIO_H) NrrdIO_Srcs.txt
+all: $(NEED_SRCS) $(NEED_PRIV_HDRS) $(NRRDIO_H) NrrdIO_Srcs.txt
 
 ### NrrdIO.h is basically the result of cat'ing together all the
 ### teem headers in $(NEED_HDRS), but we do need to "unteem" them.
@@ -155,7 +151,7 @@ teem/%.h:
 ### To start from scratch
 ###
 clean:
-	rm -f $(notdir $(TEEM_HDRS) $(NEED_SRCS) \
+	rm -f $(notdir $(NEED_SRCS) \
                        $(NEED_PUB_HDRS) $(NEED_PRIV_HDRS)) \
               NrrdIO.in.h NrrdIO.h NrrdIO_Srcs.txt \
               *.o libNrrdIO.a sampleIO
