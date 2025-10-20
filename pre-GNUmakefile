@@ -1,8 +1,8 @@
 #
 # NrrdIO: stand-alone code for basic nrrd functionality
-# Copyright (C) 2013--2020  University of Chicago
-# Copyright (C) 2008, 2007, 2006, 2005  Gordon Kindlmann
-# Copyright (C) 2004, 2003, 2002, 2001, 2000, 1999, 1998  University of Utah
+# Copyright (C) 2009--2025  University of Chicago
+# Copyright (C) 2005--2008  Gordon Kindlmann
+# Copyright (C) 1998--2004  University of Utah
 #
 # This software is provided 'as-is', without any express or implied
 # warranty.  In no event will the authors be held liable for any
@@ -51,8 +51,7 @@
 ### This file is the single place where the required Teem source files
 ### are listed.  Once the NrrdIO source distribution is created, this
 ### GNU makefile is completely moot.  TEEM_SRC_ROOT must be set in order
-### to locate the Teem source.  We use this instead of TEEM_ROOT to avoid
-### conflict with Teem's own make system
+### to locate the Teem source.
 
 $(if $(TEEM_SRC_ROOT),,\
 $(warning *)\
@@ -107,8 +106,8 @@ all: $(TEEM_HDRS) $(NEED_SRCS) $(NEED_PRIV_HDRS) $(NRRDIO_H) NrrdIO_Srcs.txt
 ### NrrdIO.h is basically the result of cat'ing together all the
 ### teem headers in $(NEED_HDRS), but we do need to "unteem" them.
 ### In the case of ITK, we have to put this into NrrdIO.h.in, so
-### that ITK's CMake to process the #cmakedefine line.  But we still
-### a NrrdIO.h to build the library here, in order to run nm to get
+### that ITK's CMake can process the #cmakedefine line.  But we still
+### need a NrrdIO.h to build the library here, in order to run nm to get
 ### all the symbols for name mangling
 ###
 $(NEED_PUB_HDRS):

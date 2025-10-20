@@ -3,9 +3,9 @@ License -------------------------------------------------------------------
 ---------------------------------------------------------------------------
 
   NrrdIO: stand-alone code for basic nrrd functionality
-  Copyright (C) 2013, 2012, 2011, 2010, 2009  University of Chicago
-  Copyright (C) 2008, 2007, 2006, 2005  Gordon Kindlmann
-  Copyright (C) 2004, 2003, 2002, 2001, 2000, 1999, 1998  University of Utah
+  Copyright (C) 2009--2025  University of Chicago
+  Copyright (C) 2005--2008  Gordon Kindlmann
+  Copyright (C) 1998--2004  University of Utah
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any
@@ -66,7 +66,7 @@ NrrdIO API crash course ---------------------------------------------------
 Please read <http://teem.sourceforge.net/nrrd/lib.html>.  The functions that
 are explained in detail are all present in NrrdIO.  Be aware, however, that
 NrrdIO currently supports ONLY the NRRD file format, and not: PNG, PNM, VTK,
-or EPS.
+EPS, or any others.
 
 The functionality in Teem's nrrd library which is NOT in NrrdIO is basically
 all those non-trivial manipulations of the values in the nrrd, or their
