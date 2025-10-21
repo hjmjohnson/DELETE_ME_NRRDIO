@@ -107,11 +107,11 @@ all: $(NEED_SRCS) $(NEED_PRIV_HDRS) $(NRRDIO_H) NrrdIO_Srcs.txt
 ### all the symbols for name mangling
 ###
 $(NEED_PUB_HDRS):
-	perl tail.pl < $(TEEM_SRC_ROOT)/src/$@ \
+	./tail.py < $(TEEM_SRC_ROOT)/src/$@ \
          | ./unteem.py \
          | grep -v HAS_BEEN_INCLUDED > $(notdir $@)
 $(NEED_PRIV_HDRS):
-	perl tail.pl < $(TEEM_SRC_ROOT)/src/$@ \
+	./tail.py < $(TEEM_SRC_ROOT)/src/$@ \
          | cat preamble.c - \
          | ./unteem.py \
          | grep -v HAS_BEEN_INCLUDED > $(notdir $@)
@@ -135,7 +135,7 @@ NrrdIO_Srcs.txt:
 ### The teem*.h headers: we need only change the pre-amble here
 ###
 teem/%.h:
-	perl tail.pl < $(TEEM_SRC_ROOT)/include/$(notdir $@) \
+	./tail.py < $(TEEM_SRC_ROOT)/include/$(notdir $@) \
           | cat preamble.c - > $(notdir $@)
 
 ### The rest: by design, these targets have the library names as part
@@ -143,7 +143,7 @@ teem/%.h:
 ### source file without any VPATH games
 ###
 %.h %.c:
-	perl tail.pl < $(TEEM_SRC_ROOT)/src/$@ \
+	./tail.py < $(TEEM_SRC_ROOT)/src/$@ \
           | cat preamble.c - \
           | ./unteem.py \
           | grep -v HAS_BEEN_INCLUDED > $(notdir $@)
