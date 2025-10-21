@@ -1,8 +1,8 @@
 /*
   NrrdIO: stand-alone code for basic nrrd functionality
-  Copyright (C) 2009--2020  University of Chicago
-  Copyright (C) 2008, 2007, 2006, 2005  Gordon Kindlmann
-  Copyright (C) 2004, 2003, 2002, 2001, 2000, 1999, 1998  University of Utah
+  Copyright (C) 2009--2025  University of Chicago
+  Copyright (C) 2005--2008  Gordon Kindlmann
+  Copyright (C) 1998--2004  University of Utah
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any
@@ -48,7 +48,7 @@ static unsigned int _nrrdZlibMaxChunk = UINT_MAX;
 /*
 ** nio->byteSkip < 0 functionality contributed by Katharina Quintus
 */
-static int
+static int /* Biff: 1 */
 _nrrdEncodingGzip_read(FILE *file, void *_data, size_t elNum, Nrrd *nrrd,
                        NrrdIoState *nio) {
   static const char me[] = "_nrrdEncodingGzip_read";
@@ -131,11 +131,11 @@ _nrrdEncodingGzip_read(FILE *file, void *_data, size_t elNum, Nrrd *nrrd,
     }
     /* backwards is (positive) number of bytes AFTER data that we ignore */
     backwards = -nio->byteSkip - 1;
-    if (sizeRed < sizeData + AIR_CAST(size_t, backwards)) {
-      char stmp1[AIR_STRLEN_SMALL], stmp2[AIR_STRLEN_SMALL];
+    if (sizeRed < sizeData + AIR_SIZE_T(backwards)) {
+      char stmp[2][AIR_STRLEN_SMALL + 1];
       biffAddf(NRRD, "%s: expected %s bytes but received only %s", me,
-               airSprintSize_t(stmp1, sizeData + AIR_CAST(size_t, backwards)),
-               airSprintSize_t(stmp2, sizeRed));
+               airSprintSize_t(stmp[0], sizeData + AIR_SIZE_T(backwards)),
+               airSprintSize_t(stmp[1], sizeRed));
       return 1;
     }
     /* also handles nio->byteSkip == -N-1 signifying extra N bytes at end */
@@ -175,9 +175,9 @@ _nrrdEncodingGzip_read(FILE *file, void *_data, size_t elNum, Nrrd *nrrd,
     }
     /* Check to see if we got out as much as we thought we should. */
     if (sizeRed != sizeData) {
-      char stmp1[AIR_STRLEN_SMALL], stmp2[AIR_STRLEN_SMALL];
+      char stmp[2][AIR_STRLEN_SMALL + 1];
       biffAddf(NRRD, "%s: expected %s bytes but received %s", me,
-               airSprintSize_t(stmp1, sizeData), airSprintSize_t(stmp2, sizeRed));
+               airSprintSize_t(stmp[0], sizeData), airSprintSize_t(stmp[1], sizeRed));
       return 1;
     }
   }
@@ -201,7 +201,7 @@ _nrrdEncodingGzip_read(FILE *file, void *_data, size_t elNum, Nrrd *nrrd,
 #endif
 }
 
-static int
+static int /* Biff: 1 */
 _nrrdEncodingGzip_write(FILE *file, const void *_data, size_t elNum, const Nrrd *nrrd,
                         NrrdIoState *nio) {
   static const char me[] = "_nrrdEncodingGzip_write";
@@ -271,9 +271,9 @@ _nrrdEncodingGzip_write(FILE *file, const void *_data, size_t elNum, const Nrrd 
 
   /* Check to see if we wrote out as much as we thought we should. */
   if (sizeWrit != sizeData) {
-    char stmp1[AIR_STRLEN_SMALL], stmp2[AIR_STRLEN_SMALL];
+    char stmp[2][AIR_STRLEN_SMALL + 1];
     biffAddf(NRRD, "%s: expected to write %s bytes, but only wrote %s", me,
-             airSprintSize_t(stmp1, sizeData), airSprintSize_t(stmp2, sizeWrit));
+             airSprintSize_t(stmp[0], sizeData), airSprintSize_t(stmp[1], sizeWrit));
     return 1;
   }
 

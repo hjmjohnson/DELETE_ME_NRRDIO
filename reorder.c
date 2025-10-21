@@ -1,8 +1,8 @@
 /*
   NrrdIO: stand-alone code for basic nrrd functionality
-  Copyright (C) 2009--2020  University of Chicago
-  Copyright (C) 2008, 2007, 2006, 2005  Gordon Kindlmann
-  Copyright (C) 2004, 2003, 2002, 2001, 2000, 1999, 1998  University of Utah
+  Copyright (C) 2009--2025  University of Chicago
+  Copyright (C) 2005--2008  Gordon Kindlmann
+  Copyright (C) 1998--2004  University of Utah
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any
@@ -34,7 +34,7 @@
 ** is not its core functionality, but all the error checking it
 ** provides.
 */
-int
+int /* Biff: 1 */
 nrrdInvertPerm(unsigned int *invp, const unsigned int *pp, unsigned int nn) {
   static const char me[] = "nrrdInvertPerm";
   int problem;
@@ -55,11 +55,10 @@ nrrdInvertPerm(unsigned int *invp, const unsigned int *pp, unsigned int nn) {
     }
     invp[pp[ii]]++;
   }
-  /* for some reason when this code was written (revision 2700 Sun Jul
-     3 04:18:33 2005 UTC) it was decided that all problems with the
-     permutation would be reported with a pile of error messages in
-     biff; rather than bailing at the first problem.  Not clear if
-     this is a good idea. */
+  /* for some reason when this code was written (revision 2700 Sun Jul 3 04:18:33
+     2005 UTC) it was decided that all problems with the  permutation would be
+     reported with a pile of error messages in biff; rather than bailing at the
+     first problem.  Not clear if this is a good idea. */
   problem = AIR_FALSE;
   for (ii = 0; ii < nn; ii++) {
     if (1 != invp[ii]) {
@@ -87,7 +86,7 @@ nrrdInvertPerm(unsigned int *invp, const unsigned int *pp, unsigned int nn) {
 ** this is only for adding a "stub" axis with length 1.  All other
 ** axis attributes are initialized as usual.
 */
-int
+int /* Biff: 1 */
 nrrdAxesInsert(Nrrd *nout, const Nrrd *nin, unsigned int axis) {
   static const char me[] = "nrrdAxesInsert", func[] = "axinsert";
   unsigned int ai;
@@ -153,10 +152,10 @@ nrrdAxesInsert(Nrrd *nout, const Nrrd *nin, unsigned int axis) {
 ** (axis[i] answers: "what do I put here", from the standpoint of the output,
 ** not "where do I put this", from the standpoint of the input)
 */
-int
+int /* Biff: 1 */
 nrrdAxesPermute(Nrrd *nout, const Nrrd *nin, const unsigned int *axes) {
   static const char me[] = "nrrdAxesPermute", func[] = "permute";
-  char buff1[NRRD_DIM_MAX * 30], buff2[AIR_STRLEN_SMALL];
+  char buff1[NRRD_DIM_MAX * 30], buff2[AIR_STRLEN_SMALL + 1];
   size_t idxOut, idxInA = 0, /* indices for input and output scanlines */
     lineSize,                /* size of block of memory which can be
                                 moved contiguously from input to output,
@@ -307,10 +306,10 @@ nrrdAxesPermute(Nrrd *nout, const Nrrd *nin, const unsigned int *axes) {
 ** insures that there is an source for all positions along the new
 ** array.
 */
-int
+int /* Biff: 1 */
 nrrdShuffle(Nrrd *nout, const Nrrd *nin, unsigned int axis, const size_t *perm) {
   static const char me[] = "nrrdShuffle", func[] = "shuffle";
-  char buff2[AIR_STRLEN_SMALL];
+  char buff2[AIR_STRLEN_SMALL + 1];
   /* Sun Feb 8 13:13:58 CST 2009: There was a memory bug here caused
      by using the same buff1[NRRD_DIM_MAX*30] declaration that had
      worked fine for nrrdAxesPermute and nrrdReshape, but does NOT
@@ -346,7 +345,7 @@ nrrdShuffle(Nrrd *nout, const Nrrd *nin, unsigned int axis, const size_t *perm) 
   len = AIR_UINT(nin->axis[axis].size);
   for (ai = 0; ai < len; ai++) {
     if (!(perm[ai] < len)) {
-      char stmp[AIR_STRLEN_SMALL];
+      char stmp[AIR_STRLEN_SMALL + 1];
       biffAddf(NRRD, "%s: perm[%d] (%s) outside valid range [0,%d]", me, ai,
                airSprintSize_t(stmp, perm[ai]), len - 1);
       return 1;
@@ -413,7 +412,7 @@ nrrdShuffle(Nrrd *nout, const Nrrd *nin, unsigned int axis, const size_t *perm) 
   if (len <= LONGEST_INTERESTING_AXIS) {
     strcpy(buff1, "");
     for (ai = 0; ai < len; ai++) {
-      char stmp[AIR_STRLEN_SMALL];
+      char stmp[AIR_STRLEN_SMALL + 1];
       sprintf(buff2, "%s%s", (ai ? "," : ""), airSprintSize_t(stmp, perm[ai]));
       strcat(buff1, buff2);
     }
@@ -442,4 +441,3 @@ nrrdShuffle(Nrrd *nout, const Nrrd *nin, unsigned int axis, const size_t *perm) 
   return 0;
 #undef LONGEST_INTERESTING_AXIS
 }
-

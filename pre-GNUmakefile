@@ -36,9 +36,9 @@
 ###
 ###    ./0-gen.sh itk   # for generating NrrdIO for ITK
 ###
-### This file is the single place where the required Teem source files are
-### listed.  Once the NrrdIO source distribution is created, this GNU makefile
-### is completely moot.
+### This pre-GNUmakefile file is the single place where the required Teem source
+### files are listed, and this file is only used for creating the NrrdIO source
+### distribution (not for compiling it)
 
 $(if $(TEEM_SRC_ROOT),,\
 $(warning *)\
@@ -48,6 +48,10 @@ $(warning * src and include directories of the Teem source)\
 $(warning * distribution (rather than a Teem installation))\
 $(warning *)\
 $(error Make quitting))
+
+### Like Teem, we rely on clang-format for auto-formatting sources
+### (The .clang-format is copied from Teem)
+CLANG_FORMAT = clang-format --style=file --assume-filename=foo.c
 
 ### The following sources are pretty much stubs, to create the symbols,
 ### but not the functionality of different formats and the bzip2 encoding.
@@ -95,20 +99,23 @@ all: $(NEED_SRCS) $(NEED_PRIV_HDRS) $(NRRDIO_H) NrrdIO_Srcs.txt
 ###
 $(NEED_PUB_HDRS):
 	./tail.py < $(TEEM_SRC_ROOT)/src/$@ \
-         | ./unteem.py \
-         | grep -v HAS_BEEN_INCLUDED > $(notdir $@)
+          | ./unteem.py \
+          | grep -v HAS_BEEN_INCLUDED > $(notdir $@)
 $(NEED_PRIV_HDRS):
 	./tail.py < $(TEEM_SRC_ROOT)/src/$@ \
-         | cat preamble.c - \
-         | ./unteem.py \
-         | grep -v HAS_BEEN_INCLUDED > $(notdir $@)
+          | cat preamble.c - \
+          | ./unteem.py \
+          | grep -v HAS_BEEN_INCLUDED \
+          | $(CLANG_FORMAT) > $(notdir $@)
 ifeq (undefined,$(origin ITK_NRRDIO))
 $(NRRDIO_H): $(NEED_PUB_HDRS)
-	cat preamble.c $(notdir $(NEED_PUB_HDRS)) > $(NRRDIO_H)
+	cat preamble.c $(notdir $(NEED_PUB_HDRS)) \
+          | $(CLANG_FORMAT) > $(NRRDIO_H)
 	rm -f $(notdir $(NEED_PUB_HDRS))
 else
 $(NRRDIO_H): $(NEED_PUB_HDRS)
-	cat preamble.c $(notdir $(NEED_PUB_HDRS)) > $(NRRDIO_H)
+	cat preamble.c $(notdir $(NEED_PUB_HDRS)) \
+          | $(CLANG_FORMAT) > $(NRRDIO_H)
 	grep -v cmakedefine NrrdIO.h.in > NrrdIO.h
 	rm -f $(notdir $(NEED_PUB_HDRS))
 endif
@@ -127,8 +134,8 @@ NrrdIO_Srcs.txt:
 	./tail.py < $(TEEM_SRC_ROOT)/src/$@ \
           | cat preamble.c - \
           | ./unteem.py \
-          | grep -v HAS_BEEN_INCLUDED > $(notdir $@)
-
+          | grep -v HAS_BEEN_INCLUDED \
+          | $(CLANG_FORMAT) > $(notdir $@)
 ### To start from scratch
 ###
 clean:

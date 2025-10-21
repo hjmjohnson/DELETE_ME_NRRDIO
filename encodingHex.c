@@ -1,8 +1,8 @@
 /*
   NrrdIO: stand-alone code for basic nrrd functionality
-  Copyright (C) 2009--2020  University of Chicago
-  Copyright (C) 2008, 2007, 2006, 2005  Gordon Kindlmann
-  Copyright (C) 2004, 2003, 2002, 2001, 2000, 1999, 1998  University of Utah
+  Copyright (C) 2009--2025  University of Chicago
+  Copyright (C) 2005--2008  Gordon Kindlmann
+  Copyright (C) 1998--2004  University of Utah
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any
@@ -60,7 +60,7 @@ _nrrdEncodingHex_available(void) {
   return AIR_TRUE;
 }
 
-static int
+static int /* Biff: 1 */
 _nrrdEncodingHex_read(FILE *file, void *_data, size_t elNum, Nrrd *nrrd,
                       NrrdIoState *nio) {
   static const char me[] = "_nrrdEncodingHex_read";
@@ -97,23 +97,24 @@ _nrrdEncodingHex_read(FILE *file, void *_data, size_t elNum, Nrrd *nrrd,
     nibIdx++;
   }
   if (nibIdx != nibNum) {
-    char stmp1[AIR_STRLEN_SMALL], stmp2[AIR_STRLEN_SMALL];
+    char stmp[2][AIR_STRLEN_SMALL + 1];
     if (EOF == car) {
       biffAddf(NRRD, "%s: hit EOF getting byte %s of %s", me,
-               airSprintSize_t(stmp1, nibIdx / 2), airSprintSize_t(stmp2, nibNum / 2));
+               airSprintSize_t(stmp[0], nibIdx / 2),
+               airSprintSize_t(stmp[1], nibNum / 2));
     } else {
       biffAddf(NRRD,
                "%s: hit invalid character ('%c') getting "
                "byte %s of %s",
-               me, car, airSprintSize_t(stmp1, nibIdx / 2),
-               airSprintSize_t(stmp2, nibNum / 2));
+               me, car, airSprintSize_t(stmp[0], nibIdx / 2),
+               airSprintSize_t(stmp[1], nibNum / 2));
     }
     return 1;
   }
   return 0;
 }
 
-static int
+static int /* Biff: 1 */
 _nrrdEncodingHex_write(FILE *file, const void *_data, size_t elNum, const Nrrd *nrrd,
                        NrrdIoState *nio) {
   static const char me[] = "_nrrdEncodingHex_write";

@@ -1,8 +1,8 @@
 /*
   NrrdIO: stand-alone code for basic nrrd functionality
-  Copyright (C) 2009--2020  University of Chicago
-  Copyright (C) 2008, 2007, 2006, 2005  Gordon Kindlmann
-  Copyright (C) 2004, 2003, 2002, 2001, 2000, 1999, 1998  University of Utah
+  Copyright (C) 2009--2025  University of Chicago
+  Copyright (C) 2005--2008  Gordon Kindlmann
+  Copyright (C) 1998--2004  University of Utah
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any
@@ -46,13 +46,14 @@ int nrrdDefaultWriteMoreThanFloatInText = AIR_FALSE;
 unsigned int nrrdDefaultWriteCharsPerLine = 75;
 unsigned int nrrdDefaultWriteValsPerLine = 8;
 int nrrdDefaultCenter = nrrdCenterCell;
+/* matches how nrrdStateVerboseIO (gone in Teem2) was initialized */
+int nrrdDefaultVerboseIO = 0;
 double nrrdDefaultSpacing = 1.0;
 
 /* these aren't really "defaults" because there's no other channel for
    specifying this information.  It is just global state.  Obviously,
    like defaults, they are not thread-safe if different threads ever
    set them differently. */
-int nrrdStateVerboseIO = 0;
 int nrrdStateKeyValuePairsPropagate = AIR_FALSE;
 int nrrdStateAlwaysSetContent = AIR_TRUE;
 int nrrdStateDisableContent = AIR_FALSE;
@@ -67,15 +68,15 @@ int nrrdStateKeyValueReturnInternalPointers = AIR_FALSE;
 int nrrdStateKindNoop = AIR_FALSE;
 
 /* these are helper functions for min/max testing */
-airLLong
+airLLong /* Biff: (private) nope */
 _nrrdLLongMaxHelp(airLLong val) {
   return val * 2 + 1;
 }
-airLLong
+airLLong /* Biff: (private) nope */
 _nrrdLLongMinHelp(airLLong val) {
   return val * 2;
 }
-airULLong
+airULLong /* Biff: (private) nope */
 _nrrdULLongMaxHelp(airULLong val) {
   return val + 1;
 }
@@ -85,4 +86,3 @@ _nrrdULLongMaxHelp(airULLong val) {
 
 /* Are there other assumptions currently built into nrrd which could
    stand to be user-controllable? */
-

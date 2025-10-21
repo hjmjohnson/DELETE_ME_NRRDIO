@@ -1,8 +1,8 @@
 /*
   NrrdIO: stand-alone code for basic nrrd functionality
-  Copyright (C) 2009--2020  University of Chicago
-  Copyright (C) 2008, 2007, 2006, 2005  Gordon Kindlmann
-  Copyright (C) 2004, 2003, 2002, 2001, 2000, 1999, 1998  University of Utah
+  Copyright (C) 2009--2025  University of Chicago
+  Copyright (C) 2005--2008  Gordon Kindlmann
+  Copyright (C) 1998--2004  University of Utah
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any
@@ -92,7 +92,7 @@ _nrrdFormatTypeValEqv[] = {
   nrrdFormatTypeEPS,
 };
 
-airEnum
+static const airEnum
 _nrrdFormatType = {
   "format",
   NRRD_FORMAT_TYPE_MAX,
@@ -183,7 +183,7 @@ _nrrdTypeValEqv[] = {
   ntBL,
 };
 
-airEnum
+static const airEnum
 _nrrdType = {
   "type",
   NRRD_TYPE_MAX,
@@ -240,7 +240,7 @@ _nrrdEncodingTypeValEqv[] = {
   nrrdEncodingTypeZRL
 };
 
-airEnum
+static const airEnum
 _nrrdEncodingType = {
   "encoding",
   NRRD_ENCODING_TYPE_MAX,
@@ -795,7 +795,7 @@ _nrrdSpacingStatusStr[NRRD_SPACING_STATUS_MAX+1] = {
 };
 
 static const char *
-_nrrdSpacingStatusDesc[NRRD_BOUNDARY_MAX+1] = {
+_nrrdSpacingStatusDesc[NRRD_SPACING_STATUS_MAX+1] = {
   "unknown spacing status behavior",
   "neither axis->spacing nor axis->spaceDirection set",
   "axis->spacing set normally",
