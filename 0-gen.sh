@@ -2,6 +2,13 @@
 set -o errexit
 set -o nounset
 
+### (new with TeemV2)
+### This is the new script for regenerating NrrdIO from Teem sources.
+### Previously this existed as a set of commented-out commands near
+### the top of pre-GNUmakefile, but (because of comments) not in a
+### useful copy-and-paste-able format. This is a more reliable way
+### to run everything to re-generate NrrdIO, including for ITK.
+
 # set NOPULL
 NOPULL=''
 if [[ $# -ge 1 ]]; then
