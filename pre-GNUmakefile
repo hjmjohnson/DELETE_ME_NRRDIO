@@ -23,11 +23,13 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #
 
-### The process of creating the NrrdIO source distribution from a Teem
-### source distribution is automated, and is controlled by this GNU
-### makefile:
+### The process of creating the NrrdIO source distribution from a Teem source
+### distribution is automated, and is controlled by this GNUmakefile.
+### First, set environment variable TEEM_SRC_ROOT to root of Teem source: the
+### full path to the directory containing `src` (with `src/air`, `src/biff`,
+### `src/nrrd` subidrectories). Then,
 ###
-### for the NrrdIO in ITK:
+### For the NrrdIO in ITK:
 ###
 ###    svn update
 ###    rm -f itk_NrrdIO_mangle.h
@@ -40,7 +42,7 @@
 ###    perl mangle.pl itk >! itk_NrrdIO_mangle.h
 ###    make -f sample-GNUmakefile clean
 ###
-### for a NrrdIO in any other application
+### Or for a NrrdIO in any other application
 ###
 ###    svn update
 ###    make -f pre-GNUmakefile clean
@@ -48,10 +50,9 @@
 ###    make -f sample-GNUmakefile
 ###    make -f sample-GNUmakefile clean
 ###
-### This file is the single place where the required Teem source files
-### are listed.  Once the NrrdIO source distribution is created, this
-### GNU makefile is completely moot.  TEEM_SRC_ROOT must be set in order
-### to locate the Teem source.
+### This file is the single place where the required Teem source files are
+### listed.  Once the NrrdIO source distribution is created, this GNU makefile
+### is completely moot.
 
 $(if $(TEEM_SRC_ROOT),,\
 $(warning *)\
@@ -131,12 +132,6 @@ endif
 ###
 NrrdIO_Srcs.txt:
 	echo $(notdir $(NEED_SRCS)) $(NEED_NOT) > $@
-
-### The teem*.h headers: we need only change the pre-amble here
-###
-teem/%.h:
-	./tail.py < $(TEEM_SRC_ROOT)/include/$(notdir $@) \
-          | cat preamble.c - > $(notdir $@)
 
 ### The rest: by design, these targets have the library names as part
 ### of the name (e.g. nrrd/simple.c) and that allows us to locate the
