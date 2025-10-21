@@ -74,9 +74,7 @@ def main():
     )
 
     try:
-        nm_proc = subprocess.Popen(
-            ['nm', 'libNrrdIO.a'], stdout=subprocess.PIPE, text=True
-        )
+        nm_proc = subprocess.Popen(['nm', 'libNrrdIO.a'], stdout=subprocess.PIPE, text=True)
     except FileNotFoundError:
         sys.exit('Error: `nm` not found in PATH')
 

@@ -58,15 +58,9 @@ def main():
             printing = False
 
         # .c files shall include NrrdIO.h not air.h/biff.h/nrrd.h
-        line = re.sub(
-            r'#(.*)include\s+"air\.h"', r'#\1include "NrrdIO.h"', line
-        )
-        line = re.sub(
-            r'#(.*)include\s+"biff\.h"', r'#\1include "NrrdIO.h"', line
-        )
-        line = re.sub(
-            r'#(.*)include\s+"nrrd\.h"', r'#\1include "NrrdIO.h"', line
-        )
+        line = re.sub(r'#(.*)include\s+"air\.h"', r'#\1include "NrrdIO.h"', line)
+        line = re.sub(r'#(.*)include\s+"biff\.h"', r'#\1include "NrrdIO.h"', line)
+        line = re.sub(r'#(.*)include\s+"nrrd\.h"', r'#\1include "NrrdIO.h"', line)
         # moot for TeemV2: line = re.sub(r'#(.*)include\s+<teem(.*)>', r'#\1include "teem\2"', line)
 
         # NrrdIO hack replacements
@@ -87,14 +81,17 @@ def main():
 
         # handle TEEM_STATIC
         if itk:
-            line = re.sub(
-                r'/\* NrrdIO-hack-001 \*/', '#cmakedefine TEEM_STATIC', line
-            )
+            line = re.sub(r'/\* NrrdIO-hack-001 \*/', '#cmakedefine TEEM_STATIC', line)
         else:
             line = re.sub(r'/\* NrrdIO-hack-001 \*/', '', line)
 
-        # always expand AIR_EXISTS(x) to (airExists(x))
-        line = re.sub(r'.* /\* NrrdIO-hack-002 \*/', '#if 1', line)
+        # remove AIR_EXISTS(x) commentary, just make it airExists(x)
+        line = re.sub(
+            r'.*/\* NrrdIO-hack-002 \*/.*',
+            '/* turn AIR_EXISTS() into airExists(), which is like isfinite() */\n'
+            '#define AIR_EXISTS(x) (airExists(x))',
+            line,
+        )
 
         # dial IO verbosity all the way down
         line = re.sub(
@@ -105,20 +102,21 @@ def main():
 
         # handle ITK-specific #include of zlib.h
         if itk:
-            line = re.sub(
-                r'.* /\* NrrdIO-hack-004 \*/', '#include "itk_zlib.h"', line
-            )
+            line = re.sub(r'.* /\* NrrdIO-hack-004 \*/', '#include "itk_zlib.h"', line)
         else:
-            line = re.sub(
-                r'.* /\* NrrdIO-hack-004 \*/', '#include <zlib.h>', line
-            )
+            line = re.sub(r'.* /\* NrrdIO-hack-004 \*/', '#include <zlib.h>', line)
 
         # rename the symbol export macro
         line = re.sub(r'\bAIR_EXPORT\b', 'NRRDIO_EXPORT', line)
         line = re.sub(r'\bBIFF_EXPORT\b', 'NRRDIO_EXPORT', line)
         line = re.sub(r'\bNRRD_EXPORT\b', 'NRRDIO_EXPORT', line)
 
-        if printing:
+        # for some extra elision hacks, to avoid cluttering up Teem source
+        # yet more NrrdIO-hack annotations ...
+        skip = False
+        skip |= bool(re.search(r'^#define AIR_WHITESPACE', line))
+
+        if printing and not skip:
             sys.stdout.write(line)
 
         if re.search(r'END non-NrrdIO', line):
