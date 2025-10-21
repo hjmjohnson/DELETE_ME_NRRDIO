@@ -108,12 +108,12 @@ all: $(NEED_SRCS) $(NEED_PRIV_HDRS) $(NRRDIO_H) NrrdIO_Srcs.txt
 ###
 $(NEED_PUB_HDRS):
 	perl tail.pl < $(TEEM_SRC_ROOT)/src/$@ \
-         | perl unteem.py \
+         | ./unteem.py \
          | grep -v HAS_BEEN_INCLUDED > $(notdir $@)
 $(NEED_PRIV_HDRS):
 	perl tail.pl < $(TEEM_SRC_ROOT)/src/$@ \
          | cat preamble.c - \
-         | perl unteem.py \
+         | ./unteem.py \
          | grep -v HAS_BEEN_INCLUDED > $(notdir $@)
 ifeq (undefined,$(origin ITK_NRRDIO))
 $(NRRDIO_H): $(NEED_PUB_HDRS)
@@ -145,7 +145,7 @@ teem/%.h:
 %.h %.c:
 	perl tail.pl < $(TEEM_SRC_ROOT)/src/$@ \
           | cat preamble.c - \
-          | perl unteem.py \
+          | ./unteem.py \
           | grep -v HAS_BEEN_INCLUDED > $(notdir $@)
 
 ### To start from scratch

@@ -18,11 +18,12 @@
 #     software in a product, an acknowledgment in the product
 #     documentation would be appreciated but is not required.
 
-#
-# This helps in converting teem source files into NrrdIO source files, by:
-# - changing the way #includes are done
-# - excluding the lines delimited by "BEGIN non-NrrdIO" and "END non-NrrdIO"
-# - as well as doing some other "NrrdIO-hack"-marked tweaks
+"""
+This helps in converting Teem .c,.h source files into NrrdIO source files, by:
+- changing the way #includes are done
+- excluding the lines delimited by "BEGIN non-NrrdIO" and "END non-NrrdIO"
+- as well as doing some other "NrrdIO-hack"-marked tweaks
+"""
 
 import os
 import re
@@ -30,6 +31,18 @@ import sys
 
 
 def main():
+    """Performs the Teem->NrrdIO source conversion,
+    reading Teem source from stdin and writing NrrdIO source to stdout"""
+
+    # If stdin is a terminal, print usage info and exit
+    if sys.stdin.isatty():
+        print(
+            'This it to be used as a filter with piping, e.g.\n'
+            '   cat fileT.c | ./unteem.py > fileN.c',
+            file=sys.stderr,
+        )
+        sys.exit(0)
+
     itk = 1 if os.getenv('ITK_NRRDIO') is not None else 0
     printing = True
 
@@ -39,9 +52,15 @@ def main():
             printing = False
 
         # .c files shall include NrrdIO.h not air.h/biff.h/nrrd.h
-        line = re.sub(r'#(.*)include\s+"air\.h"', r'#\1include "NrrdIO.h"', line)
-        line = re.sub(r'#(.*)include\s+"biff\.h"', r'#\1include "NrrdIO.h"', line)
-        line = re.sub(r'#(.*)include\s+"nrrd\.h"', r'#\1include "NrrdIO.h"', line)
+        line = re.sub(
+            r'#(.*)include\s+"air\.h"', r'#\1include "NrrdIO.h"', line
+        )
+        line = re.sub(
+            r'#(.*)include\s+"biff\.h"', r'#\1include "NrrdIO.h"', line
+        )
+        line = re.sub(
+            r'#(.*)include\s+"nrrd\.h"', r'#\1include "NrrdIO.h"', line
+        )
         # moot for TeemV2: line = re.sub(r'#(.*)include\s+<teem(.*)>', r'#\1include "teem\2"', line)
 
         # NrrdIO hack replacements
@@ -62,7 +81,9 @@ def main():
 
         # handle TEEM_STATIC
         if itk:
-            line = re.sub(r'/\* NrrdIO-hack-001 \*/', '#cmakedefine TEEM_STATIC', line)
+            line = re.sub(
+                r'/\* NrrdIO-hack-001 \*/', '#cmakedefine TEEM_STATIC', line
+            )
         else:
             line = re.sub(r'/\* NrrdIO-hack-001 \*/', '', line)
 
@@ -70,13 +91,21 @@ def main():
         line = re.sub(r'.* /\* NrrdIO-hack-002 \*/', '#if 1', line)
 
         # dial IO verbosity all the way down
-        line = re.sub(r'.* /\* NrrdIO-hack-003 \*/', 'int nrrdDefaultVerboseIO = 0;', line)
+        line = re.sub(
+            r'.* /\* NrrdIO-hack-003 \*/',
+            'int nrrdDefaultVerboseIO = 0;',
+            line,
+        )
 
         # handle ITK-specific #include of zlib.h
         if itk:
-            line = re.sub(r'.* /\* NrrdIO-hack-004 \*/', '#include "itk_zlib.h"', line)
+            line = re.sub(
+                r'.* /\* NrrdIO-hack-004 \*/', '#include "itk_zlib.h"', line
+            )
         else:
-            line = re.sub(r'.* /\* NrrdIO-hack-004 \*/', '#include <zlib.h>', line)
+            line = re.sub(
+                r'.* /\* NrrdIO-hack-004 \*/', '#include <zlib.h>', line
+            )
 
         # rename the symbol export macro
         line = re.sub(r'\bAIR_EXPORT\b', 'NRRDIO_EXPORT', line)
