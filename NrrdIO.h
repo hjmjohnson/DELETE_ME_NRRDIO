@@ -1637,7 +1637,6 @@ NRRDIO_EXPORT int nrrdDefaultWriteMoreThanFloatInText;
 NRRDIO_EXPORT unsigned int nrrdDefaultWriteCharsPerLine;
 NRRDIO_EXPORT unsigned int nrrdDefaultWriteValsPerLine;
 NRRDIO_EXPORT int nrrdDefaultCenter;
-NRRDIO_EXPORT double nrrdDefaultSpacing;
 /* Teem v2: nrrdStateVerboseIO --> nrrdDefaultVerboseIO,
    and added NrrdIoState->verbose which is initialized by this */
 NRRDIO_EXPORT int nrrdDefaultVerboseIO;

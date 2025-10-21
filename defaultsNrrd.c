@@ -48,7 +48,6 @@ unsigned int nrrdDefaultWriteValsPerLine = 8;
 int nrrdDefaultCenter = nrrdCenterCell;
 /* matches how nrrdStateVerboseIO (gone in Teem2) was initialized */
 int nrrdDefaultVerboseIO = 0;
-double nrrdDefaultSpacing = 1.0;
 
 /* these aren't really "defaults" because there's no other channel for
    specifying this information.  It is just global state.  Obviously,
