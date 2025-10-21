@@ -2,12 +2,22 @@
 set -o errexit
 set -o nounset
 
+# set NOPULL
+NOPULL=''
+if [[ $# -ge 1 ]]; then
+    if [[ $1 == "-np" || $1 == "--nopull" ]]; then
+        NOPULL='yup'
+        shift
+    fi
+fi
+
+# set ITK and/or show usage info
 if [[ $# -eq 0 ]]; then
     ITK=''
 elif [[ $# -eq 1 && $1 == "itk" ]]; then
     ITK='yup'
 else
-    >&2 echo "Usage: $0 [itk]"
+    >&2 echo "Usage: $0 [-np|--nopull] [itk]"
     exit 1
 fi
 
@@ -31,8 +41,10 @@ fi
 
 # turn on echoing
 set -o xtrace
-(cd $TEEM_SRC_ROOT; git pull)
-git pull
+if [[ ! $NOPULL ]]; then
+    (cd $TEEM_SRC_ROOT; git pull)
+    git pull
+fi
 if [[ $ITK ]]; then
     # regenerate itk_NrrdIO_mangle.h
     make -f pre-GNUmakefile clean
@@ -49,8 +61,8 @@ if [[ $ITK ]]; then
 else
     make -f pre-GNUmakefile clean
     make -f pre-GNUmakefile
-    make -f sample-GNUmakefile
     make -f sample-GNUmakefile clean
+    make -f sample-GNUmakefile
 fi
 # turn off echoing
 set +o xtrace
