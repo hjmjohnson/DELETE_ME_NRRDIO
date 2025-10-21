@@ -26,9 +26,9 @@ eliding the lines up to and including a line containing nothing but '*/'
 import sys
 import re
 
-printing = False
+PRINTING = False
 for line in sys.stdin:
-    if printing:
+    if PRINTING:
         sys.stdout.write(line)
     elif re.match(r'^\*/\s*$', line):
-        printing = True
+        PRINTING = True
