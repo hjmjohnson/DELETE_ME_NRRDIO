@@ -39,35 +39,37 @@ import textwrap
 
 def main():
     """Filters outout of `nm libNrrdIO.a` to produce #define renames"""
-    if len(sys.argv) != 2:
-        sys.exit('usage: python mangle.py <prefix>')
-    prefix = sys.argv[1]
+    if len(sys.argv) != 3:   #       0            1            2
+        sys.exit(f'usage: python mangle.py <symbolPrefix> <filePrefix>')
+    symbPrefix = sys.argv[1]
+    filePrefix = sys.argv[2]
 
     mac = sys.platform == 'darwin'
 
     print(
         textwrap.dedent(
             f"""\
-        #ifndef __{prefix}_NrrdIO_mangle_h
-        #define __{prefix}_NrrdIO_mangle_h
+        #ifndef __{filePrefix}_NrrdIO_mangle_h
+        #define __{filePrefix}_NrrdIO_mangle_h
 
         /*
-        This header file mangles all symbols exported from the
-        NrrdIO library. It is included in all files while building
-        the NrrdIO library.  Due to namespace pollution, no NrrdIO
-        headers should be included in .h files in ITK.
+        This header file mangles all symbols exported from the NrrdIO library,
+        to be included in all .c files while building NrrdIO in settings that
+        require symbol renaming.
 
-        This file was created via the mangle.py script in the
-        NrrdIO distribution:
+        This file was made by the mangle.py script in the NrrdIO distribution:
 
-          python mangle.py {prefix} > {prefix}_NrrdIO_mangle.h
+          python mangle.py {symbPrefix} {filePrefix}
 
-        This uses nm to list all text (T), data (D) symbols, as well
-        read-only (R) things (seen on Linux) and "other" (S) things
-        (seen on Mac).  On Macs, the preceding underscore is removed.
+        and then > redirecting that to the current file, via the "0-gen.sh itk"
+        script in the NrrdIO distribution.
+        This uses nm to list all text (T), data (D) symbols, as well as
+        read-only (R) things (on Linux) and "other" (S) things (on Mac).
+        On Macs, the preceding underscore is removed.
 
-        Also ensures that a few others starting with nrrd are included, and
-        prevents variables ending with .N* where N is some number, from inclusion.
+        This also ensures that a few others things starting with nrrd are
+        included, and prevents variables ending with .N* where N is some
+        number, from inclusion.
         */
         """
         )
@@ -91,12 +93,12 @@ def main():
             symbol = re.sub(r'.*\s[TBDSR]\s(.*)', r'\1', line).strip()
             if mac and symbol.startswith('_'):
                 symbol = symbol[1:]
-            print(f'#define {symbol} {prefix}_{symbol}')
+            print(f'#define {symbol} {symbPrefix}_{symbol}')
 
     nm_proc.stdout.close()
     nm_proc.wait()
 
-    print(f'#endif  /* __{prefix}_NrrdIO_mangle_h */')
+    print(f'#endif  /* __{filePrefix}_NrrdIO_mangle_h */')
 
 
 if __name__ == '__main__':

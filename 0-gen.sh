@@ -58,7 +58,7 @@ if [[ $ITK ]]; then
     make -f pre-GNUmakefile
     make -f sample-GNUmakefile # to make libNrrdIO.a
     # runs "nm libNrrdIO.a" to generate #define renamings
-    ./mangle.py @MANGLE_PREFIX@ > itk_NrrdIO_mangle.h
+    ./mangle.py @MANGLE_PREFIX@ itk > itk_NrrdIO_mangle.h.in
     # can now delete libNrrdIO.a and everything else
     make -f sample-GNUmakefile clean
     # restart making NrrdIO; with ITK_NRRDIO it generates NrrdIO.h.in
