@@ -99,10 +99,10 @@ CMakeLists.txt: to build NrrdIO with CMake
 pre-GNUmakefile: how NrrdIO sources are created from the Teem
 sources. Requires that TEEM_SRC_ROOT be set, and uses the following two files.
 
-tail.pl, unteem.pl: used to make small modifications to the source files to
+tail.py, unteem.py: used to make small modifications to the source files to
 convert them from Teem to NrrdIO sources
 
-mangle.pl: used to generate a #include file for name-mangling the external
+mangle.py: used to generate a #include file for name-mangling the external
 symbols in the NrrdIO library, to avoid possible problems with programs
 that link with both NrrdIO and the rest of Teem.
 
@@ -114,5 +114,4 @@ in Teem, but which has been removed from NrrdIO in the interest of simplicity.
 The filenames are in fact unfortunately misleading, but they should be
 understood as listing the functionality that is MISSING in NrrdIO.
 
-All other files: copied/modified from the air, biff, and nrrd libraries of
-Teem.
+All other files: copied/modified from the air, biff, and nrrd libraries of Teem.

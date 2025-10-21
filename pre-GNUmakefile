@@ -25,30 +25,16 @@
 
 ### The process of creating the NrrdIO source distribution from a Teem source
 ### distribution is automated, and is controlled by this GNUmakefile.
+###
 ### First, set environment variable TEEM_SRC_ROOT to root of Teem source: the
 ### full path to the directory containing `src` (with `src/air`, `src/biff`,
-### `src/nrrd` subidrectories). Then,
+### `src/nrrd` subidrectories). Then run:
 ###
-### For the NrrdIO in ITK:
+###    ./0-gen.sh       # for generating regular NrrdIO
 ###
-###    svn update
-###    rm -f itk_NrrdIO_mangle.h
-###    touch itk_NrrdIO_mangle.h
-###    make -f pre-GNUmakefile clean
-###    setenv ITK_NRRDIO
-###    make -f pre-GNUmakefile
-###    unsetenv ITK_NRRDIO
-###    make -f sample-GNUmakefile
-###    perl mangle.pl itk >! itk_NrrdIO_mangle.h
-###    make -f sample-GNUmakefile clean
+### or:
 ###
-### Or for a NrrdIO in any other application
-###
-###    svn update
-###    make -f pre-GNUmakefile clean
-###    make -f pre-GNUmakefile
-###    make -f sample-GNUmakefile
-###    make -f sample-GNUmakefile clean
+###    ./0-gen.sh itk   # for generating NrrdIO for ITK
 ###
 ### This file is the single place where the required Teem source files are
 ### listed.  Once the NrrdIO source distribution is created, this GNU makefile

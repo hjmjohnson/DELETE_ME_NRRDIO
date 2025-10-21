@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+set -o errexit
+set -o nounset
+
+if [[ $# -eq 0 ]]; then
+    ITK=''
+elif [[ $# -eq 1 && $1 == "itk" ]]; then
+    ITK='yup'
+else
+    >&2 echo "Usage: $0 [itk]"
+    exit 1
+fi
+
+# make sure TEEM_SRC_ROOT is set, and set correctly
+if [ -z ${TEEM_SRC_ROOT+x} ]; then
+    >&2 echo "$0: Oops: need TEEM_SRC_ROOT set to path to Teem source, the full path"
+    >&2 echo "$0: of the directory containing \"src\" (with \"src/air\", \"src/biff\","
+    >&2 echo "$0: \"src/nrrd\" subidrectories)."
+    exit 1
+else
+    if [[ ! -d "$TEEM_SRC_ROOT/src" ||
+          ! -d "$TEEM_SRC_ROOT/src/air" ||
+          ! -d "$TEEM_SRC_ROOT/src/biff" ||
+          ! -d "$TEEM_SRC_ROOT/src/nrrd" ]]; then
+        >&2 echo "$0: TEEM_SRC_ROOT is set to $TEEM_SRC_ROOT"
+        >&2 echo "$0: but don't see \"src\" subdirectory with further"
+        >&2 echo "$0: \"src/air\", \"src/biff\", \"src/nrrd\" subdirs"
+        exit 1
+    fi
+fi
+
+# turn on echoing
+set -o xtrace
+(cd $TEEM_SRC_ROOT; git pull)
+git pull
+if [[ $ITK ]]; then
+    # regenerate itk_NrrdIO_mangle.h
+    make -f pre-GNUmakefile clean
+    make -f pre-GNUmakefile
+    make -f sample-GNUmakefile # to make libNrrdIO.a
+    # runs "nm libNrrdIO.a" to generate #define renamings
+    ./mangle.py itk > itk_NrrdIO_mangle.h
+    # can now delete libNrrdIO.a and everything else
+    make -f sample-GNUmakefile clean
+    # restart making NrrdIO; with ITK_NRRDIO it generates NrrdIO.h.in
+    # (as well as NrrdIO.h)
+    make -f pre-GNUmakefile clean
+    ITK_NRRDIO= make -f pre-GNUmakefile
+else
+    make -f pre-GNUmakefile clean
+    make -f pre-GNUmakefile
+    make -f sample-GNUmakefile
+    make -f sample-GNUmakefile clean
+fi
+# turn off echoing
+set +o xtrace
