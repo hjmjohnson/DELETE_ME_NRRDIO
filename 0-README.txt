@@ -2,7 +2,7 @@
 License -------------------------------------------------------------------
 ---------------------------------------------------------------------------
 
-  NrrdIO: stand-alone code for basic nrrd functionality
+  NrrdIO: C library for NRRD file IO (with optional compressions)
   Copyright (C) 2009--2025  University of Chicago
   Copyright (C) 2005--2008  Gordon Kindlmann
   Copyright (C) 1998--2004  University of Utah
