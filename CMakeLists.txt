@@ -90,11 +90,28 @@ add_definitions(-DTEEM_BUILD=1)
 
 # (TeemV2: TEEM_DIO (and dio.c) is gone)
 
-# Possibly turn on usage of zlib compression (requires linking with libz)
-# (i.e., programs compiled with ITKNrrdIO must also be compiled with zlib)
-add_definitions(-DTEEM_ZLIB=1)
+set(TEEM_COMPRESSION_LIBRARIES "")
+option(ENABLE_TEEM_ZLIB "Enable support for ZLIB compression options" ON)
+if(ENABLE_TEEM_ZLIB)
+  # Possibly turn on usage of zlib compression (requires linking with libz)
+  # (i.e., programs compiled with ITKNrrdIO must also be compiled with zlib)
+  add_definitions(-DTEEM_ZLIB=1)
+  find_package(ZLIB)
+  list(APPEND TEEM_COMPRESSION_LIBRARIES ZLIB::ZLIB)
+endif()
+
+option(ENABLE_TEEM_BZIP2 "Enable support for BZIP2 compression options" OFF)
+  # Possibly turn on usage of bzip2 compression (requires linking with bz2)
+  # (i.e., programs compiled with ITKNrrdIO must also be compiled with bz2)
+  add_definitions(-DTEEM_BZIP2=1)
+  find_package(BZip2)
+  list(APPEND TEEM_COMPRESSION_LIBRARIES BZip2::BZip2)
+endif()
 
 add_library(NrrdIO ${nrrdio_SRCS} )
+if(ENABLE_TEEM_ZLIB OR ENABLE_TEEM_BZIP2)
+        target_link_libraries(NrrdIO PRIVATE ${TEEM_COMPRESSION_LIBRARIES})
+endif()
 
 ## These are ITK-specific
 #target_link_libraries(NrrdIO ${ITK_ZLIB_LIBRARIES} )
