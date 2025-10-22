@@ -36,14 +36,47 @@ include_regular_expression("^.*.h$")
 # package. See http://teem.sourceforge.net for more information.
 #
 
-set(nrrdio_SRCS comment.c enumsNrrd.c mop.c string.c 754.c defaultsNrrd.c
-parseAir.c format.c parseNrrd.c formatEPS.c encoding.c
-formatNRRD.c encodingAscii.c formatPNG.c encodingBzip2.c
-formatPNM.c accessors.c encodingGzip.c formatText.c
-array.c encodingHex.c formatVTK.c read.c arraysNrrd.c encodingRaw.c
-gzio.c reorder.c write.c axis.c endianAir.c  keyvalue.c
-biffbiff.c biffmsg.c endianNrrd.c methodsNrrd.c  sane.c enum.c
-miscAir.c simple.c )
+set(nrrdio_SRCS
+    754.c
+    accessors.c
+    array.c
+    arraysNrrd.c
+    axis.c
+    biffbiff.c
+    biffmsg.c
+    comment.c
+    defaultsNrrd.c
+    encoding.c
+    encodingAscii.c
+    encodingBzip2.c
+    encodingGzip.c
+    encodingHex.c
+    encodingRaw.c
+    endianAir.c
+    endianNrrd.c
+    enum.c
+    enumsNrrd.c
+    format.c
+    formatEPS.c
+    formatNRRD.c
+    formatPNG.c
+    formatPNM.c
+    formatText.c
+    formatVTK.c
+    gzio.c
+    keyvalue.c
+    methodsNrrd.c
+    miscAir.c
+    mop.c
+    parseAir.c
+    parseNrrd.c
+    read.c
+    reorder.c
+    sane.c
+    simple.c
+    string.c
+    write.c
+)
 
 # Turn on TEEM_BUILD so that the proper dll export def's are
 # used on windows builds.
