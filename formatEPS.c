@@ -26,19 +26,19 @@
 #include "NrrdIO.h"
 #include "privateNrrd.h"
 
-int
+static int
 _nrrdFormatEPS_available(void) {
 
   return AIR_FALSE;
 }
 
-int
+static int
 _nrrdFormatEPS_nameLooksLike(const char *filename) {
 
   return airEndsWith(filename, NRRD_EXT_EPS);
 }
 
-int
+static int /* Biff: maybe:3:AIR_FALSE */
 _nrrdFormatEPS_fitsInto(const Nrrd *nrrd, const NrrdEncoding *encoding, int useBiff) {
   static const char me[] = "_nrrdFormatEPS_fitsInto";
   char err[AIR_STRLEN_MED];
@@ -51,16 +51,17 @@ _nrrdFormatEPS_fitsInto(const Nrrd *nrrd, const NrrdEncoding *encoding, int useB
   return AIR_FALSE;
 }
 
-int
+static int
 _nrrdFormatEPS_contentStartsLike(NrrdIoState *nio) {
 
   AIR_UNUSED(nio);
+  /* this is a write-only format */
   return AIR_FALSE;
 }
 
-int
+static int /* Biff: 1 */
 _nrrdFormatEPS_read(FILE *file, Nrrd *nrrd, NrrdIoState *nio) {
-  static const char me[] = "_nrrdReadEPS";
+  static const char me[] = "_nrrdFormatEPS_read";
   char err[AIR_STRLEN_MED];
 
   AIR_UNUSED(file);
@@ -71,13 +72,13 @@ _nrrdFormatEPS_read(FILE *file, Nrrd *nrrd, NrrdIoState *nio) {
   return 1;
 }
 
-int
-_nrrdFormatEPS_write(FILE *file, const Nrrd *nrrd, NrrdIoState *nio) {
+static int /* Biff: 1 */
+_nrrdFormatEPS_write(FILE *file, const Nrrd *_nrrd, NrrdIoState *nio) {
   static const char me[] = "_nrrdFormatEPS_write";
   char err[AIR_STRLEN_MED];
 
   AIR_UNUSED(file);
-  AIR_UNUSED(nrrd);
+  AIR_UNUSED(_nrrd);
   AIR_UNUSED(nio);
   sprintf(err, "%s: Sorry, %s format not available in NrrdIO", me, nrrdFormatEPS->name);
   biffAdd(NRRD, err);
