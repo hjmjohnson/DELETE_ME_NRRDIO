@@ -23,9 +23,9 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
-PROJECT(NrrdIO)
-INCLUDE_REGULAR_EXPRESSION("^.*.h$")
+cmake_minimum_required(VERSION 2.4)
+project(NrrdIO)
+include_regular_expression("^.*.h$")
 
 #
 # This CMake file configures the NrrdIO library build.  NrrdIO
@@ -34,7 +34,7 @@ INCLUDE_REGULAR_EXPRESSION("^.*.h$")
 # package. See http://teem.sourceforge.net for more information.
 #
 
-SET(nrrdio_SRCS comment.c enumsNrrd.c mop.c string.c 754.c defaultsNrrd.c
+set(nrrdio_SRCS comment.c enumsNrrd.c mop.c string.c 754.c defaultsNrrd.c
 parseAir.c format.c parseNrrd.c formatEPS.c encoding.c
 formatNRRD.c encodingAscii.c formatPNG.c encodingBzip2.c
 formatPNM.c accessors.c encodingGzip.c formatText.c
@@ -45,7 +45,7 @@ miscAir.c simple.c )
 
 # Turn on TEEM_BUILD so that the proper dll export def's are
 # used on windows builds.
-ADD_DEFINITIONS(-DTEEM_BUILD=1)
+add_definitions(-DTEEM_BUILD=1)
 
 # (TeemV2: TEEM_QNANHIBIT is gone)
 
@@ -53,12 +53,12 @@ ADD_DEFINITIONS(-DTEEM_BUILD=1)
 
 # Possibly turn on usage of zlib compression (requires linking with libz)
 # (i.e., programs compiled with ITKNrrdIO must also be compiled with zlib)
-#ADD_DEFINITIONS(-DTEEM_ZLIB=1)
+#add_definitions(-DTEEM_ZLIB=1)
 
-ADD_LIBRARY(NrrdIO ${nrrdio_SRCS} )
+add_library(NrrdIO ${nrrdio_SRCS} )
 
 ## These are ITK-specific
-#TARGET_LINK_LIBRARIES(NrrdIO ${ITK_ZLIB_LIBRARIES} )
-#INSTALL_TARGETS(/lib/InsightToolkit ITKNrrdIO)
-#INSTALL_FILES(/include/InsightToolkit/Utilities/NrrdIO "(\\.h)$")
+#target_link_libraries(NrrdIO ${ITK_ZLIB_LIBRARIES} )
+#install_targets(/lib/InsightToolkit ITKNrrdIO)
+#install_files(/include/InsightToolkit/Utilities/NrrdIO "(\\.h)$")
 
