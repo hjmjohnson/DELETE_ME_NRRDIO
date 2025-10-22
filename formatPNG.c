@@ -26,19 +26,19 @@
 #include "NrrdIO.h"
 #include "privateNrrd.h"
 
-int
+static int
 _nrrdFormatPNG_available(void) {
 
   return AIR_FALSE;
 }
 
-int
+static int
 _nrrdFormatPNG_nameLooksLike(const char *filename) {
 
   return airEndsWith(filename, NRRD_EXT_PNG);
 }
 
-int
+static int /* Biff: maybe:3:AIR_FALSE */
 _nrrdFormatPNG_fitsInto(const Nrrd *nrrd, const NrrdEncoding *encoding, int useBiff) {
   static const char me[] = "_nrrdFormatPNG_fitsInto";
   char err[AIR_STRLEN_MED];
@@ -51,16 +51,16 @@ _nrrdFormatPNG_fitsInto(const Nrrd *nrrd, const NrrdEncoding *encoding, int useB
   return AIR_FALSE;
 }
 
-int
+static int
 _nrrdFormatPNG_contentStartsLike(NrrdIoState *nio) {
 
   AIR_UNUSED(nio);
   return AIR_FALSE;
 }
 
-int
+static int /* Biff: 1 */
 _nrrdFormatPNG_read(FILE *file, Nrrd *nrrd, NrrdIoState *nio) {
-  static const char me[] = "_nrrdReadPNG";
+  static const char me[] = "_nrrdFormatPNG_read";
   char err[AIR_STRLEN_MED];
 
   AIR_UNUSED(file);
@@ -71,7 +71,7 @@ _nrrdFormatPNG_read(FILE *file, Nrrd *nrrd, NrrdIoState *nio) {
   return 1;
 }
 
-int
+static int /* Biff: 1 */
 _nrrdFormatPNG_write(FILE *file, const Nrrd *nrrd, NrrdIoState *nio) {
   static const char me[] = "_nrrdFormatPNG_write";
   char err[AIR_STRLEN_MED];
