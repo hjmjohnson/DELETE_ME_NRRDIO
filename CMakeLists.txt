@@ -92,7 +92,7 @@ add_definitions(-DTEEM_BUILD=1)
 
 # Possibly turn on usage of zlib compression (requires linking with libz)
 # (i.e., programs compiled with ITKNrrdIO must also be compiled with zlib)
-#add_definitions(-DTEEM_ZLIB=1)
+add_definitions(-DTEEM_ZLIB=1)
 
 add_library(NrrdIO ${nrrdio_SRCS} )
 
