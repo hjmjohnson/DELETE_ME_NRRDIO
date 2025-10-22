@@ -57,7 +57,7 @@ CLANG_FORMAT = clang-format --style=file --assume-filename=foo.c
 ### but not the functionality of different formats and the bzip2 encoding.
 ### As such, they are NOT copied from Teem but are made for NrrdIO.
 ###
-NEED_NOT = encodingBzip2.c formatEPS.c formatPNG.c formatPNM.c \
+NEED_NOT = formatEPS.c formatPNG.c formatPNM.c \
   formatText.c formatVTK.c
 
 # Gone in TeemV2: TEEM_HDRS = $(addprefix teem/, teemDio.h teemPng.h teemQnanhibit.h)
@@ -74,7 +74,7 @@ NEED_NRRD = $(addprefix nrrd/, \
   reorder.c axis.c simple.c comment.c keyvalue.c endianNrrd.c \
   parseNrrd.c gzio.c read.c write.c format.c formatNRRD.c \
   encodingRaw.c encodingAscii.c encodingHex.c encodingGzip.c encodingZRL.c \
-  encoding.c subset.c)
+  encodingBzip2.c encoding.c subset.c)
 NEED_SRCS = $(NEED_AIR) $(NEED_BIFF) $(NEED_NRRD)
 NEED_PUB_HDRS = air/air.h biff/biff.h \
   $(addprefix nrrd/, nrrdDefines.h nrrdEnums.h nrrdMacros.h nrrd.h)
