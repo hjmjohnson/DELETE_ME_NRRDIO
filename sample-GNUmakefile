@@ -66,13 +66,13 @@ libNrrdIO.a : $(patsubst %.c,%.o,$(shell cat NrrdIO_Srcs.txt))
 ###
 %.o : %.c
 	$(CC) $(CCFLAGS) \
-          -DTEEM_ZLIB=1 $(ZLIB_IPATH) -c $^ -o $@
+          -DTEEM_ZLIB=1 -DTEEM_BZIP2=1 $(ZLIB_IPATH) -c $^ -o $@
 
 ### this creates the sampleIO program
 ###
 sampleIO : sampleIO.c
-	$(CC) $(CCFLAGS) -DTEEM_ZLIB=1 $(ZLIB_IPATH) \
-	$^ -o $@ -L. -lNrrdIO $(ZLIB_LPATH) -lz -lm
+	$(CC) $(CCFLAGS) -DTEEM_ZLIB=1 -DTEEM_BZIP2=1 $(ZLIB_IPATH) \
+	$^ -o $@ -L. -lNrrdIO $(ZLIB_LPATH) -lz -lm -lbz2
 
 ### how to clean up
 ###
