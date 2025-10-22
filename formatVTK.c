@@ -26,19 +26,19 @@
 #include "NrrdIO.h"
 #include "privateNrrd.h"
 
-int
+static int
 _nrrdFormatVTK_available(void) {
 
   return AIR_FALSE;
 }
 
-int
+static int
 _nrrdFormatVTK_nameLooksLike(const char *fname) {
 
   return airEndsWith(fname, NRRD_EXT_VTK);
 }
 
-int
+static int /* Biff: maybe:3:AIR_FALSE */
 _nrrdFormatVTK_fitsInto(const Nrrd *nrrd, const NrrdEncoding *encoding, int useBiff) {
   static const char me[] = "_nrrdFormatVTK_fitsInto";
   char err[AIR_STRLEN_MED];
@@ -51,16 +51,16 @@ _nrrdFormatVTK_fitsInto(const Nrrd *nrrd, const NrrdEncoding *encoding, int useB
   return AIR_FALSE;
 }
 
-int
+static int
 _nrrdFormatVTK_contentStartsLike(NrrdIoState *nio) {
 
   AIR_UNUSED(nio);
   return AIR_FALSE;
 }
 
-int
+static int /* Biff: 1 */
 _nrrdFormatVTK_read(FILE *file, Nrrd *nrrd, NrrdIoState *nio) {
-  static const char me[] = "_nrrdReadVTK";
+  static const char me[] = "_nrrdFormatVTK_read";
   char err[AIR_STRLEN_MED];
 
   AIR_UNUSED(file);
@@ -72,13 +72,13 @@ _nrrdFormatVTK_read(FILE *file, Nrrd *nrrd, NrrdIoState *nio) {
 }
 
 /* this strongly assumes that nrrdFitsInFormat() was true */
-int
-_nrrdFormatVTK_write(FILE *file, const Nrrd *nrrd, NrrdIoState *nio) {
+static int /* Biff: 1 */
+_nrrdFormatVTK_write(FILE *file, const Nrrd *_nrrd, NrrdIoState *nio) {
   static const char me[] = "_nrrdFormatVTK_write";
   char err[AIR_STRLEN_MED];
 
   AIR_UNUSED(file);
-  AIR_UNUSED(nrrd);
+  AIR_UNUSED(_nrrd);
   AIR_UNUSED(nio);
   sprintf(err, "%s: Sorry, %s format not available in NrrdIO", me, nrrdFormatVTK->name);
   biffAdd(NRRD, err);

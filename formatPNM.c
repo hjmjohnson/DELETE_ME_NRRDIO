@@ -26,19 +26,19 @@
 #include "NrrdIO.h"
 #include "privateNrrd.h"
 
-int
+static int
 _nrrdFormatPNM_available(void) {
 
   return AIR_FALSE;
 }
 
-int
+static int
 _nrrdFormatPNM_nameLooksLike(const char *filename) {
 
   return (airEndsWith(filename, NRRD_EXT_PGM) || airEndsWith(filename, NRRD_EXT_PPM));
 }
 
-int
+static int /* Biff: maybe:3:AIR_FALSE */
 _nrrdFormatPNM_fitsInto(const Nrrd *nrrd, const NrrdEncoding *encoding, int useBiff) {
   static const char me[] = "_nrrdFormatPNM_fitsInto";
   char err[AIR_STRLEN_MED];
@@ -51,14 +51,14 @@ _nrrdFormatPNM_fitsInto(const Nrrd *nrrd, const NrrdEncoding *encoding, int useB
   return AIR_FALSE;
 }
 
-int
+static int
 _nrrdFormatPNM_contentStartsLike(NrrdIoState *nio) {
 
   AIR_UNUSED(nio);
   return AIR_FALSE;
 }
 
-int
+static int /* Biff: 1 */
 _nrrdFormatPNM_read(FILE *file, Nrrd *nrrd, NrrdIoState *nio) {
   static const char me[] = "_nrrdReadPNM";
   char err[AIR_STRLEN_MED];
@@ -71,13 +71,13 @@ _nrrdFormatPNM_read(FILE *file, Nrrd *nrrd, NrrdIoState *nio) {
   return 1;
 }
 
-int
-_nrrdFormatPNM_write(FILE *file, const Nrrd *nrrd, NrrdIoState *nio) {
+static int /* Biff: 1 */
+_nrrdFormatPNM_write(FILE *file, const Nrrd *_nrrd, NrrdIoState *nio) {
   static const char me[] = "_nrrdFormatPNM_write";
   char err[AIR_STRLEN_MED];
 
   AIR_UNUSED(file);
-  AIR_UNUSED(nrrd);
+  AIR_UNUSED(_nrrd);
   AIR_UNUSED(nio);
   sprintf(err, "%s: Sorry, %s format not available in NrrdIO", me, nrrdFormatPNM->name);
   biffAdd(NRRD, err);

@@ -26,20 +26,19 @@
 #include "NrrdIO.h"
 #include "privateNrrd.h"
 
-int
+static int
 _nrrdFormatText_available(void) {
-
   return AIR_FALSE;
 }
 
-int
+static int
 _nrrdFormatText_nameLooksLike(const char *fname) {
 
   return (airEndsWith(fname, NRRD_EXT_TEXT) || airEndsWith(fname, ".text")
           || airEndsWith(fname, ".ascii"));
 }
 
-int
+static int /* Biff: maybe:3:AIR_FALSE */
 _nrrdFormatText_fitsInto(const Nrrd *nrrd, const NrrdEncoding *encoding, int useBiff) {
   static const char me[] = "_nrrdFormatText_fitsInto";
   char err[AIR_STRLEN_MED];
@@ -52,16 +51,16 @@ _nrrdFormatText_fitsInto(const Nrrd *nrrd, const NrrdEncoding *encoding, int use
   return AIR_FALSE;
 }
 
-int
+static int
 _nrrdFormatText_contentStartsLike(NrrdIoState *nio) {
 
   AIR_UNUSED(nio);
   return AIR_FALSE;
 }
 
-int
+static int /* Biff: 1 */
 _nrrdFormatText_read(FILE *file, Nrrd *nrrd, NrrdIoState *nio) {
-  static const char me[] = "_nrrdReadText";
+  static const char me[] = "_nrrdFormatText_read";
   char err[AIR_STRLEN_MED];
 
   AIR_UNUSED(file);
@@ -72,7 +71,7 @@ _nrrdFormatText_read(FILE *file, Nrrd *nrrd, NrrdIoState *nio) {
   return 1;
 }
 
-int
+static int
 _nrrdFormatText_write(FILE *file, const Nrrd *nrrd, NrrdIoState *nio) {
   static const char me[] = "_nrrdFormatText_write";
   char err[AIR_STRLEN_MED];
