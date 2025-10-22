@@ -218,6 +218,8 @@ number, from inclusion.
 #define nrrdAxisInfoCopy @MANGLE_PREFIX@_nrrdAxisInfoCopy
 #define nrrdAxisInfoGet_nva @MANGLE_PREFIX@_nrrdAxisInfoGet_nva
 #define nrrdAxisInfoGet_va @MANGLE_PREFIX@_nrrdAxisInfoGet_va
+#define nrrdAxisInfoPos @MANGLE_PREFIX@_nrrdAxisInfoPos
+#define nrrdAxisInfoPosRange @MANGLE_PREFIX@_nrrdAxisInfoPosRange
 #define nrrdAxisInfoSet_nva @MANGLE_PREFIX@_nrrdAxisInfoSet_nva
 #define nrrdAxisInfoSet_va @MANGLE_PREFIX@_nrrdAxisInfoSet_va
 #define nrrdDomainAxesGet @MANGLE_PREFIX@_nrrdDomainAxesGet
@@ -340,4 +342,4 @@ number, from inclusion.
 #define nrrdFormatText @MANGLE_PREFIX@_nrrdFormatText
 #define _nrrdFormatVTK @MANGLE_PREFIX@__nrrdFormatVTK
 #define nrrdFormatVTK @MANGLE_PREFIX@_nrrdFormatVTK
-#endif  /* __@MANGLE_PREFIX@_NrrdIO_mangle_h__ */ 
+#endif  /* __@MANGLE_PREFIX@_NrrdIO_mangle_h__ */

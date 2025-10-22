@@ -49,8 +49,8 @@ def main():
     print(
         textwrap.dedent(
             f"""\
-        #ifndef __{file_pfx}_NrrdIO_mangle_h
-        #define __{file_pfx}_NrrdIO_mangle_h
+        #ifndef __{symb_pfx}_NrrdIO_mangle_h__
+        #define __{symb_pfx}_NrrdIO_mangle_h__
 
         /*
         This header file mangles all symbols exported from the NrrdIO library,
@@ -97,7 +97,7 @@ def main():
     if nm_proc.returncode not in (0, None):
         sys.exit(f'`nm` exited with status {nm_proc.returncode}')
 
-    print(f'#endif  /* __{file_pfx}_NrrdIO_mangle_h */')
+    print(f'#endif  /* __{symb_pfx}_NrrdIO_mangle_h__ */')
 
 
 if __name__ == '__main__':
