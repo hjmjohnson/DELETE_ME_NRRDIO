@@ -52,6 +52,7 @@ set(nrrdio_SRCS
     encodingGzip.c
     encodingHex.c
     encodingRaw.c
+    encodingZRL.c
     endianAir.c
     endianNrrd.c
     enum.c
@@ -70,11 +71,14 @@ set(nrrdio_SRCS
     mop.c
     parseAir.c
     parseNrrd.c
+    preamble.c
     read.c
     reorder.c
+    sampleIO.c
     sane.c
     simple.c
     string.c
+    subset.c
     write.c
 )
 
