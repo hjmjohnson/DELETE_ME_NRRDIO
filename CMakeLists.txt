@@ -22,8 +22,10 @@
 #
 # 3. This notice may not be removed or altered from any source distribution.
 #
-
-cmake_minimum_required(VERSION 2.4)
+# CMake Version 3.25 came out November 16, 2022
+# https://www.kitware.com/cmake-3-25-0-available-for-download/
+# why use 3.25: has nicer syntax for try_compile
+cmake_minimum_required(VERSION 3.25...3.31)
 project(NrrdIO)
 include_regular_expression("^.*.h$")
 
