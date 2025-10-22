@@ -1,5 +1,5 @@
 #
-# NrrdIO: stand-alone code for basic nrrd functionality
+# NrrdIO: C library for NRRD file IO (with optional compressions)
 # Copyright (C) 2009--2025  University of Chicago
 # Copyright (C) 2005--2008  Gordon Kindlmann
 # Copyright (C) 1998--2004  University of Utah
@@ -21,20 +21,24 @@
 #    not be misrepresented as being the original software.
 #
 # 3. This notice may not be removed or altered from any source distribution.
-#
-# CMake Version 3.25 came out November 16, 2022
-# https://www.kitware.com/cmake-3-25-0-available-for-download/
-# why use 3.25: has nicer syntax for try_compile
-cmake_minimum_required(VERSION 3.25...3.31)
-project(NrrdIO)
-include_regular_expression("^.*.h$")
 
-#
-# This CMake file configures the NrrdIO library build.  NrrdIO
-# is used by Insight/Code/IO/itkNrrdIO for reading/writing
-# "Nearly Raw Raster Data" within the open-source Teem software
-# package. See http://teem.sourceforge.net for more information.
-#
+# NrrdIO can be used in bigger applications (e.g. ITK) to add support for the
+# "Nearly Raw Raster Data" NRRD format: https://teem.sf.net/nrrd/format.html
+# See ./0-README.txt for more information about how these source files are
+# generated automatically from a checkout of Teem. The use of Teem source
+# files (with modifications and relicensing) is why "TEEM" shows up in some
+# compilation flags, but our job here is to build NrrdIO aka NRRDIO, hence
+# the NrrdIO/NRRDIO naming of CMake things that are externally visible.
+
+# CMake Version 3.12 came out July 17, 2018
+# https://www.kitware.com/cmake-3-12-0-available-for-download/
+# No need to copy Teem's use of 3.25 because we don't need "try_compile" since
+# here the AIR_EXISTS macro always expands into a airExists() function call.
+# 3.12 improved find_package() (including its use for ZLIB and BZip2).
+cmake_minimum_required(VERSION 3.12)
+project(NrrdIO
+        DESCRIPTION "NrrdIO: C library for NRRD file IO (with optional compressions)"
+        LANGUAGES C)
 
 set(nrrdio_SRCS
     754.c
@@ -82,39 +86,38 @@ set(nrrdio_SRCS
     write.c
 )
 
-# Turn on TEEM_BUILD so that the proper dll export def's are
-# used on windows builds.
+# Turn on TEEM_BUILD when compiling .c files so that on Windows
+# the proper dll export def's are used.
 add_definitions(-DTEEM_BUILD=1)
 
-# (TeemV2: TEEM_QNANHIBIT is gone)
-
-# (TeemV2: TEEM_DIO (and dio.c) is gone)
-
-set(TEEM_COMPRESSION_LIBRARIES "")
-option(ENABLE_TEEM_ZLIB "Enable support for ZLIB compression options" ON)
-if(ENABLE_TEEM_ZLIB)
+set(NRRDIO_COMPRESSION_LIBRARIES "")
+option(NRRDIO_USE_ZLIB "Enable support for ZLIB compression" ON)
+if(NRRDIO_USE_ZLIB)
   # Possibly turn on usage of zlib compression (requires linking with libz)
   # (i.e., programs compiled with ITKNrrdIO must also be compiled with zlib)
   add_definitions(-DTEEM_ZLIB=1)
   find_package(ZLIB)
-  list(APPEND TEEM_COMPRESSION_LIBRARIES ZLIB::ZLIB)
+  list(APPEND NRRDIO_COMPRESSION_LIBRARIES ZLIB::ZLIB)
 endif()
 
-option(ENABLE_TEEM_BZIP2 "Enable support for BZIP2 compression options" OFF)
+option(NRRDIO_USE_BZIP2 "Enable support for BZIP2 compression" OFF)
+if(NRRDIO_USE_BZIP2)
   # Possibly turn on usage of bzip2 compression (requires linking with bz2)
   # (i.e., programs compiled with ITKNrrdIO must also be compiled with bz2)
   add_definitions(-DTEEM_BZIP2=1)
   find_package(BZip2)
-  list(APPEND TEEM_COMPRESSION_LIBRARIES BZip2::BZip2)
+  list(APPEND NRRDIO_COMPRESSION_LIBRARIES BZip2::BZip2)
 endif()
 
+# Build the library
 add_library(NrrdIO ${nrrdio_SRCS} )
-if(ENABLE_TEEM_ZLIB OR ENABLE_TEEM_BZIP2)
-        target_link_libraries(NrrdIO PRIVATE ${TEEM_COMPRESSION_LIBRARIES})
+
+# Link optional compression libs
+if(NRRDIO_USE_ZLIB OR NRRDIO_USE_BZIP2)
+  target_link_libraries(NrrdIO PRIVATE ${NRRDIO_COMPRESSION_LIBRARIES})
 endif()
 
 ## These are ITK-specific
 #target_link_libraries(NrrdIO ${ITK_ZLIB_LIBRARIES} )
 #install_targets(/lib/InsightToolkit ITKNrrdIO)
 #install_files(/include/InsightToolkit/Utilities/NrrdIO "(\\.h)$")
-
