@@ -50,11 +50,6 @@
 #define TEEM_VERSION_STRING "2.0.0" /* THIS is the semantic version "number" */
 /* clang-format on */
 
-/* THE FOLLOWING INCLUDE IS ONLY FOR THE ITK DISTRIBUTION.
-   This header mangles the symbols in the NrrdIO library, preventing
-   conflicts in applications linked against two versions of NrrdIO. */
-#include "itk_NrrdIO_mangle.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -1524,7 +1519,7 @@ typedef struct NrrdEncoding_t {
 ** it took to read it in.
 */
 typedef struct NrrdIoState_t {
-  int verbose;                  /* new for Teem v2: replacing the old global
+  int verbose;                  /* new for TeemV2: replacing the old global
                                    nrrdStateVerboseIO */
   char *path,                   /* allows us to remember the directory
                                    from whence this nrrd was "load"ed, or
@@ -1687,7 +1682,7 @@ NRRDIO_EXPORT int nrrdDefaultWriteMoreThanFloatInText;
 NRRDIO_EXPORT unsigned int nrrdDefaultWriteCharsPerLine;
 NRRDIO_EXPORT unsigned int nrrdDefaultWriteValsPerLine;
 NRRDIO_EXPORT int nrrdDefaultCenter;
-/* Teem v2: nrrdStateVerboseIO --> nrrdDefaultVerboseIO,
+/* TeemV2: nrrdStateVerboseIO --> nrrdDefaultVerboseIO,
    and added NrrdIoState->verbose which is initialized by this */
 NRRDIO_EXPORT int nrrdDefaultVerboseIO;
 NRRDIO_EXPORT int nrrdStateKeyValuePairsPropagate;
