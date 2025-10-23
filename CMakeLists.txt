@@ -40,12 +40,12 @@ project(NrrdIO
         DESCRIPTION "NrrdIO: C library for NRRD file IO (with optional compressions)"
         LANGUAGES C)
 
-# Set NRRD_LIBRARY_PREFIX manually when configuring with cmake
+# Set NRRDIO_PREFIX manually when configuring with cmake
 # so that the generated library does not conflict with the
 # public name of the Teem library. By default this variable
 # is empty and the library name defaults to the project name
 # of NrrdIO.
-set(NRRDIO_LIBRARY_NAME ${NRRD_LIBRARY_PREFIX}${PROJECT_NAME})
+set(NRRDIO_LIBRARY_NAME ${NRRDIO_PREFIX}${PROJECT_NAME})
 
 set(nrrdio_SRCS
     754.c
@@ -123,7 +123,7 @@ if(NRRDIO_USE_ZLIB OR NRRDIO_USE_BZIP2)
 endif()
 
 ## These are ITK-specific
-if ( "${NRRD_LIBRARY_PREFIX}" STREQUAL "ITK" )
+if ( "${NRRDIO_PREFIX}" STREQUAL "ITK" )
   if(NOT BUILD_SHARED_LIBS)
    set(TEEM_STATIC 1)
   endif()
