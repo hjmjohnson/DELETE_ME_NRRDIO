@@ -1,74 +1,11 @@
 # back-up files
 *~
-*.bak
-# vim swp files
-*.swp
-# back-up files when conflicts occur
-*.orig
-
-
-# Binary directory ignore patterns
-*BUILD*/
-*build*/
-
-# kdevelop
-*.kdev*
-.kdev*
-
-# Clion editor internal project information
-.idea
-
-# Visual Studio
-.vs
-
-# Mac System File
-.DS_Store
-
-# python virtual environment
-.venv
-
 
 # Object and binary files
 *.o
-*.obj
-*.lo
-*.la
-*.al
 *.a
-*.lib
 *.so
 *.so.*
 *.dylib
 *.dll
 *.exe
-*.out
-*.app
-*.i
-*.ii
-*.s
-*.su
-*.idb
-*.pdb
-*.exp
-
-# Precompiled headers
-*.gch
-*.pch
-
-# CMake
-CMakeCache.txt
-CMakeFiles/
-cmake_install.cmake
-CTestTestfile.cmake
-Makefile
-install_manifest.txt
-compile_commands.json
-CMakeScripts/
-Testing/
-_build/
-build/
-build-*/
-out/
-bin/
-lib/
-
