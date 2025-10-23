@@ -685,6 +685,76 @@ _nrrdCenter2(int center, int defCenter) {
 }
 
 /*
+******** nrrdAxisInfoPos()
+**
+** given a nrrd, an axis, and a (floating point) index space position,
+** return the position implied the axis's min, max, and center
+** Does the opposite of nrrdAxisIdx().
+*/
+double /* Biff: nope */
+nrrdAxisInfoPos(const Nrrd *nrrd, unsigned int ax, double idx) {
+  int center;
+  size_t size;
+  double min, max;
+
+  if (!(nrrd && ax <= nrrd->dim - 1)) {
+    return AIR_NAN;
+  }
+  center = _nrrdCenter(nrrd->axis[ax].center);
+  min = nrrd->axis[ax].min;
+  max = nrrd->axis[ax].max;
+  size = nrrd->axis[ax].size;
+
+  return NRRD_POS(center, min, max, size, idx);
+}
+
+/*
+******** nrrdAxisInfoPosRange()
+**
+** given a nrrd, an axis, and two (floating point) index space positions,
+** return the range of positions implied the axis's min, max, and center
+** The opposite of nrrdAxisIdxRange()
+*/
+void
+nrrdAxisInfoPosRange(double *loP, double *hiP, const Nrrd *nrrd, unsigned int ax,
+                     double loIdx, double hiIdx) {
+  int center, flip = 0;
+  size_t size;
+  double min, max, tmp;
+
+  if (!(loP && hiP && nrrd && ax <= nrrd->dim - 1)) {
+    if (loP) *loP = AIR_NAN;
+    if (hiP) *hiP = AIR_NAN;
+    return;
+  }
+  center = _nrrdCenter(nrrd->axis[ax].center);
+  min = nrrd->axis[ax].min;
+  max = nrrd->axis[ax].max;
+  size = nrrd->axis[ax].size;
+
+  if (loIdx > hiIdx) {
+    flip = 1;
+    tmp = loIdx;
+    loIdx = hiIdx;
+    hiIdx = tmp;
+  }
+  if (nrrdCenterCell == center) {
+    *loP = AIR_AFFINE(0, loIdx, size, min, max);
+    *hiP = AIR_AFFINE(0, hiIdx + 1, size, min, max);
+  } else {
+    *loP = AIR_AFFINE(0, loIdx, size - 1, min, max);
+    *hiP = AIR_AFFINE(0, hiIdx, size - 1, min, max);
+  }
+  if (flip) {
+    tmp = *loP;
+    *loP = *hiP;
+    *hiP = tmp;
+  }
+
+  return;
+}
+
+/*
 ******** nrrdDomainAxesGet
 **
 ** Based on the per-axis "kind" field, learns which are the domain

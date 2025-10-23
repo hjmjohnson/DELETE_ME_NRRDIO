@@ -537,6 +537,28 @@ NRRDIO_EXPORT void airMopDebug(airArray *arr);
 */
 #define AIR_CLAMP(a, b, c) ((b) < (a) ? (a) : ((b) > (c) ? (c) : (b)))
 
+/*
+******** AIR_AFFINE(i,x,I,o,O)
+**
+** given intervals [i,I], [o,O] and a value x which may or may not be
+** inside [i,I], return the value y such that y stands in the same
+** relationship to [o,O] that x does with [i,I].  Or:
+**
+**    y - o         x - i
+**   -------   =   -------
+**    O - o         I - i
+**
+** It is the callers responsibility to make sure I-i and O-o are
+** both non-zero.  Strictly speaking, real problems arise only when
+** when I-i is zero: division by zero generates either NaN or infinity
+**
+** NOTE that "x" is evaluated only once (which makes this more useful),
+** as is "I" and "O" (usually not so important); "i" and "o" are each
+** evaluated twice
+*/
+#define AIR_AFFINE(i, x, I, o, O)                                                       \
+  (((double)(O) - (o)) * ((double)(x) - (i)) / ((double)(I) - (i)) + (o))
+
 #ifdef __cplusplus
 }
 #endif
@@ -1143,6 +1165,29 @@ enum {
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/*
+******** NRRD_CELL_POS, NRRD_NODE_POS, NRRD_POS
+******** NRRD_CELL_IDX, NRRD_NODE_IDX, NRRD_IDX
+**
+** the guts of nrrdAxisPos() and nrrdAxisIdx(), for converting
+** between "index space" location and "position" or "world space" location,
+** given the centering, min and max "position", and number of samples.
+**
+** Unlike nrrdAxisPos() and nrrdAxisIdx(), this assumes that center
+** is either nrrdCenterCell or nrrdCenterNode, but not nrrdCenterUnknown.
+*/
+/* index to position, cell centering */
+#define NRRD_CELL_POS(min, max, size, idx)                                              \
+  AIR_AFFINE(0, (idx) + 0.5, (size), (min), (max))
+
+/* index to position, node centering */
+#define NRRD_NODE_POS(min, max, size, idx) AIR_AFFINE(0, (idx), (size) - 1, (min), (max))
+
+/* index to position, either centering */
+#define NRRD_POS(center, min, max, size, idx)                                           \
+  (nrrdCenterCell == (center) ? NRRD_CELL_POS((min), (max), (size), (idx))              \
+                              : NRRD_NODE_POS((min), (max), (size), (idx)))
 
 /*
 ******** NRRD_COORD_UPDATE
