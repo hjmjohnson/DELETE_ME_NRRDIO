@@ -37,8 +37,13 @@
 # 3.12 improved find_package() (including its use for ZLIB and BZip2).
 cmake_minimum_required(VERSION 3.12...3.31)
 project(NrrdIO
+        VERSION 2.0.0 # <- NrrdIO should be versionsed the same as the teem library that it was extracted from.
         DESCRIPTION "NrrdIO: C library for NRRD file IO (with optional compressions)"
         LANGUAGES C)
+
+if(NOT DEFINED BUILD_SHARED_LIBS)
+  set(BUILD_SHARED_LIBS OFF)
+endif()
 
 # Set NRRDIO_PREFIX manually when configuring with cmake
 # so that the generated library does not conflict with the
@@ -121,6 +126,13 @@ endif()
 
 # Build the library
 add_library(${NRRDIO_LIBRARY_NAME} ${nrrdio_SRCS} )
+set_target_properties(${NRRDIO_LIBRARY_NAME} PROPERTIES
+  OUTPUT_NAME ${NRRDIO_LIBRARY_NAME}
+  VERSION ${PROJECT_VERSION}
+  SOVERSION ${PROJECT_VERSION_MAJOR}
+  POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS}
+)
+
 # Link optional compression libs
 if(NRRDIO_USE_ZLIB OR NRRDIO_USE_BZIP2)
   target_link_libraries(${NRRDIO_LIBRARY_NAME} PRIVATE ${NRRDIO_COMPRESSION_LIBRARIES})
