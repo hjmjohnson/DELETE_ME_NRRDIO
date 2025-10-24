@@ -97,6 +97,10 @@ set(nrrdio_SRCS
 # the proper dll export def's are used.
 add_definitions(-DTEEM_BUILD=1)
 
+# Configure (and learn how to find) NrrdIO.h
+configure_file(${NrrdIO_SOURCE_DIR}/NrrdIO.h.in ${NrrdIO_BINARY_DIR}/NrrdIO.h)
+include_directories( ${NrrdIO_BINARY_DIR} )
+
 option(NRRDIO_USE_ZLIB "Enable support for ZLIB compression" ON)
 if(NRRDIO_USE_ZLIB)
   # Possibly turn on usage of zlib compression (requires linking with libz)
