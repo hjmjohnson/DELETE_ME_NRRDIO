@@ -248,4 +248,3 @@ nrrdSprint[NRRD_TYPE_MAX+1])(char *, const void *) = {
   (int (*)(char *, const void *))_nrrdSprintFL,
   (int (*)(char *, const void *))_nrrdSprintDB,
   NULL};
-
