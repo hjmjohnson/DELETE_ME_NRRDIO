@@ -50,16 +50,19 @@
 #define TEEM_VERSION_STRING "2.00.0" /* cannot be so easily compared */
 /* clang-format on */
 
+#cmakedefine TEEM_ITK_MANGLE @TEEM_ITK_MANGLE@
+#if TEEM_ITK_MANGLE
 /* THE FOLLOWING INCLUDE IS ONLY FOR THE ITK DISTRIBUTION.
    This header mangles the symbols in the NrrdIO library, preventing
    conflicts in applications linked against two versions of NrrdIO. */
-#include "itk_NrrdIO_mangle.h"
+#  include "itk_NrrdIO_mangle.h"
+#cmakedefine TEEM_STATIC
+#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#cmakedefine TEEM_STATIC
 #if defined(_WIN32) && !defined(__CYGWIN__) && !defined(TEEM_STATIC)
 #  if defined(TEEM_BUILD) || defined(air_EXPORTS) || defined(teem_EXPORTS)
 #    define NRRDIO_EXPORT extern __declspec(dllexport)
@@ -1525,7 +1528,7 @@ typedef struct NrrdEncoding_t {
 ** it took to read it in.
 */
 typedef struct NrrdIoState_t {
-  int verbose;                  /* new for Teem v2: replacing the old global
+  int verbose;                  /* new for TeemV2: replacing the old global
                                    nrrdStateVerboseIO */
   char *path,                   /* allows us to remember the directory
                                    from whence this nrrd was "load"ed, or
@@ -1688,7 +1691,7 @@ NRRDIO_EXPORT int nrrdDefaultWriteMoreThanFloatInText;
 NRRDIO_EXPORT unsigned int nrrdDefaultWriteCharsPerLine;
 NRRDIO_EXPORT unsigned int nrrdDefaultWriteValsPerLine;
 NRRDIO_EXPORT int nrrdDefaultCenter;
-/* Teem v2: nrrdStateVerboseIO --> nrrdDefaultVerboseIO,
+/* TeemV2: nrrdStateVerboseIO --> nrrdDefaultVerboseIO,
    and added NrrdIoState->verbose which is initialized by this */
 NRRDIO_EXPORT int nrrdDefaultVerboseIO;
 NRRDIO_EXPORT int nrrdStateKeyValuePairsPropagate;

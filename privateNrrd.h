@@ -151,7 +151,11 @@ extern int _nrrdMaybeAllocMaybeZero_nva(Nrrd *nrrd, int type, unsigned int dim,
 #  if TEEM_VTK_MANGLE
 #    include "vtk_zlib_mangle.h"
 #  endif
-#  include "itk_zlib.h"
+#  if TEEM_ITK_MANGLE
+#    include "itk_zlib.h"
+#  else
+#    include "zlib.h"
+#  endif
 
 /* gzio.c */
 extern gzFile _nrrdGzOpen(FILE *fd, const char *mode);
